@@ -1,29 +1,37 @@
 "use client"
 import React,{useState, useEffect} from 'react';
 import Header from '@/components/Header';
+import axios from 'axios';
+
 export default function Form(){
     const [seriesChecked, setSeriesChecked]=useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedFile, setSelectedFile]= useState(null);
+    const [selectedFile, setSelectedFile]= useState({bookCover:""});
+    const [fileName, setFileName]=useState("");
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async(event) => {
     const file = event.target.files[0];
-    
+
     // Check if file exists and its size is within the limit
     if (file && file.size <= 100 * 1024) { // 100 KB limit
       setSelectedFile(file);
+      setFileName(file.name);
       setErrorMessage('');
     } else {
       setSelectedFile(null);
+      setFileName("");
       setErrorMessage('File size exceeds 100 KB limit.');
     }
+    const base64 = await convertToBase64(file);
+
+    setSelectedFile({...selectedFile,bookCover:base64})
   };
     const [formData, setFormData]=useState({
         bookTitle:"",
         authorName:"",
         publishedYear:"",
         price:"",
-        photo:"",
+        bookCover:"",
         pageCount:"",
         isbn:"",
         volume:"",
@@ -45,14 +53,38 @@ export default function Form(){
         }));
       };
     
+      function convertToBase64(file){
+        return new Promise((resolve, reject)=>{
+          const fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
+          fileReader.onload = ()=>{
+            resolve(fileReader.result)
+          };
+          fileReader.onerror =(error)=>{
+            reject(error)
+          }
+        })
+
+      }
+
+      const createCover = async(newCover)=>{
+        try {
+          const response = await axios.post('http://localhost:8000/upload', newCover);
+          const fileId = response.data.message; 
+          console.log("Uploaded file ID:", fileId);
+          return fileId;
+      } catch (error) {
+          console.log("Error uploading file:", error);
+          throw error; 
+      }
+      }
+
       const handleSubmit = async (e) => {
         e.preventDefault();
-    
+     
         try {
-          // Validate that "Year" and "Pages Scanned" are positive numbers
-        //   const isValid = validateForm();
-        //   if (isValid) {
-            const seriesValue = seriesChecked ? "Yes" : "No";
+        const photoId=  await createCover(selectedFile);
+        const seriesValue = seriesChecked ? "Yes" : "No";
         
             const data = {
               series: seriesValue,
@@ -63,17 +95,15 @@ export default function Form(){
               isbn: formData.isbn,
               volume:formData.volume,
               price:formData.price,
-              photo:selectedFile,
-              contentType:selectedFile.type,
-              fileName:selectedFile,
+              bookCover:photoId,
               edition:formData.edition,
               seriesName:formData.seriesName,
               subject:formData.subject,
               publishedMonth:formData.publishedMonth
             };
+  
             console.log(data);
-            console.log(selectedFile.type);
-            const response = await fetch(
+            const bookResponse = await fetch(
               "http://localhost:8000/books/save-book-data",
               {
                 method: "POST",
@@ -84,14 +114,14 @@ export default function Form(){
               }
             );
     
-            if (response.ok) {
+            if (bookResponse.ok) {
               setFormData({
                 bookTitle:"",
                 authorName:"",
                 publishedYear:"",
                 publishedMonth:"",
                 price:"",
-                photo:"",
+                bookCover:"",
                 pageCount:"",
                 isbn:"",
                 volume:"",
@@ -102,6 +132,7 @@ export default function Form(){
               });
               setSeriesChecked(false);
               setSelectedFile(null);
+              setFileName("");
             } else {
               console.error("Failed to submit the form to the backend");
             }
@@ -111,32 +142,7 @@ export default function Form(){
         }
       };
     
-    //   const validateForm = () => {
-    //     const {
-    //       bookTitle,
-    //       pageCount,
-    //       
-    //     year,
-         
-    //     } = formData;
-    
-    //     if (!bookTitle || !pageCount) {
-    //       alert("Title, Total pages  fields are required");
-    //       return false;
-    //     }
-    
-    //     if (pageCount <= 0) {
-    //       alert("Total pages scanned should be a positive number");
-    //       return false;
-    //     }
-    
-    //     if (year && year <= 0) {
-    //       alert("Year of publication should be a positive number");
-    //       return false;
-    //     }
-    
-    //     return true;
-    //   };
+  
     
     return (
         <>
@@ -244,17 +250,18 @@ export default function Form(){
                       <input
                       type="file"
                       accept="image/*"
-                      name="photo"
+                      name="bookCover"
                       className="hidden"
                       id="fileInput"
-                      value={formData.photo}
+                      value={formData.bookCover}
                       onChange={handleFileChange}
                     
                     />
                     <label htmlFor="fileInput"
                     className="appearance-none border border-gray-300 py-2 px-5 rounded-md w-full cursor-pointer"
                      >
-                    {selectedFile ? ` ${selectedFile.name}` : "Upload File"}
+                    {fileName ? ` ${fileName}` : "Upload File"}
+                   
                     </label>
                     
                     {errorMessage && <p className="text-red-500">{errorMessage}</p>}

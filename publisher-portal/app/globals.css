@@ -34,3 +34,20 @@
     .button:hover {
     @apply bg-sky-600;
     }
+
+    .bookCard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px; /* Adjust margin between cards */
+    }
+    
+    .bookCover {
+      margin-bottom: 10px; /* Adjust spacing between cover and details */
+    }
+    
+    .bookDetails {
+      text-align: center;
+    }
+    

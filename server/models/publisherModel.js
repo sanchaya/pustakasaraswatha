@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 
 const logoSchema = new mongoose.Schema({
-    data: Buffer, // Store logo data as Buffer (Blob)
-    contentType: String, // Store content type of the logo
+     logo:String
   });
 
 const publisherSchema = new mongoose.Schema({
     userId:String,
-    userName:String,
+    name:String,
     email:String,
-    webAddress:String,
+    weburl:String,
     address:String,
-    logo:Blob,
-    phoneNumber:Number,
+    logo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Logo', // Reference to the BookPhoto collection
+    },
+    phone:Number,
 });
 
 

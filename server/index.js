@@ -7,9 +7,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { Book, BookPhoto } = require('./models/bookModel');
+const {Logo, Publisher } = require('./models/publisherModel');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
+const {savePhoto, saveLogo} = require('./savePhoto');
 connectDB()
   .then(() => {
     // Set up your middleware, routes, and other server configurations here
@@ -25,7 +26,20 @@ app.get('/', (req, res) => {
     res.send('App is running on port 8000..');
   });
 
-  app.post('/books/save-book-data', upload.single('photo'), async (req, res) => {
+  app.post('/upload',async (req, res) => {
+    try {
+      console.log("call");
+      const body = req.body;
+      const cover = await BookPhoto.create(body);
+      cover.save();
+      console.log(cover._id);
+      res.status(201).json({message:cover._id});
+    } catch (error) {
+      res.status(409).json({message:error.message});
+    }
+  });
+
+  app.post('/books/save-book-data',async (req, res) => {
     try {
         const {
             bookTitle,
@@ -35,23 +49,14 @@ app.get('/', (req, res) => {
             volume,
             edition,
             isbn,
+            bookCover,
             publishedYear,
             publishedMonth,
             seriesChecked,
             subject,
         } = req.body;
         console.log(req.body);
-        // req.file contains the file uploaded using multer
-        const photo = req.file;
-
-        // Create a new BookPhoto document
-        const bookPhoto = new BookPhoto({
-            data: photo.buffer,
-            contentType: photo.mimetype,
-        });
-
-        // Save the photo
-        await bookPhoto.save();
+       
 
         // Create a new Book document with photo reference
         const book = new Book({
@@ -62,10 +67,10 @@ app.get('/', (req, res) => {
             volume,
             edition,
             isbn,
+            bookCover,
             publishedYear,
             publishedMonth,
             seriesChecked,
-            photo: bookPhoto._id,
             subject,
         });
 
@@ -87,7 +92,7 @@ app.get('/books/details', async (req, res) => {
       // Process each book to fetch corresponding photo data
       const booksWithPhoto = await Promise.all(books.map(async (book) => {
         // Fetch photo data using the photo ID stored in the book
-        const book_photo = await BookPhoto.findById(book.photo);
+        const book_photo = await BookPhoto.findById(book.bookCover);
         const photoData = book_photo ? book_photo: null;
   
         // Return book details along with photo data
@@ -96,7 +101,7 @@ app.get('/books/details', async (req, res) => {
           book_photo: photoData,
         };
       }));
-      console.log(booksWithPhoto);
+ 
       // Send the response with books and corresponding photo data
       res.status(200).json(booksWithPhoto);
     } catch (error) {
@@ -104,9 +109,52 @@ app.get('/books/details', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
-app.post('/users/sign-up',(req,res)=>{
 
+app.post('/publishers/logo',async(req,res)=>{
+  try {
+    console.log("call logo");
+    const body = req.body;
+    const logo = await Logo.create(body);
+    logo.save();
+    console.log(logo._id);
+    res.status(201).json({message:logo._id});
+  } catch (error) {
+    res.status(409).json({message:error.message});
+  }
+})
+  
+app.post('/publishers/register',async(req,res)=>{
+  try {
+    const {
+        name,
+        email,
+        weburl,
+        address,
+        phone,
+        logo
+      
+    } = req.body;
+    console.log(req.body);
+   
+
+ 
+    const user = new Publisher({
+      name,
+      email,
+      weburl,
+      address,
+      phone,
+      logo
+       
+    });
+
+    await user.save();
+
+    res.status(201).json({ message: 'New User added' });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
 })
 
 
