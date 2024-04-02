@@ -1,22 +1,29 @@
 "use client"
 import React,{useState, useEffect} from 'react';
+import axios from 'axios';
 
 export default function RegisterForm(){
  
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedFile, setSelectedFile]= useState(null);
+    const [selectedFile, setSelectedFile]= useState({logo:""});
+    const [fileName, setFileName]=useState("");
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async(event) => {
     const file = event.target.files[0];
     
     // Check if file exists and its size is within the limit
     if (file && file.size <= 100 * 1024) { // 100 KB limit
       setSelectedFile(file);
+      setFileName(file.name);
       setErrorMessage('');
     } else {
       setSelectedFile(null);
       setErrorMessage('File size exceeds 100 KB limit.');
+      setFileName("");
     }
+    const base64 = await convertToBase64(file);
+
+    setSelectedFile({...selectedFile,logo:base64})
   };
     const [formData, setFormData]=useState({
         name:"",
@@ -37,11 +44,37 @@ export default function RegisterForm(){
         }));
       };
     
+      function convertToBase64(file){
+        return new Promise((resolve, reject)=>{
+          const fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
+          fileReader.onload = ()=>{
+            resolve(fileReader.result)
+          };
+          fileReader.onerror =(error)=>{
+            reject(error)
+          }
+        })
+
+      }
+
+      const createLogo = async(newLogo)=>{
+        try {
+          const response = await axios.post('http://localhost:8000/publishers/logo', newLogo);
+          const fileId = response.data.message; 
+          console.log("Uploaded file ID:", fileId);
+          return fileId;
+      } catch (error) {
+          console.log("Error uploading file:", error);
+          throw error; 
+      }
+      }
+
       const handleSubmit = async (e) => {
         e.preventDefault();
     
         try {
-   
+            const LogoId=  await createLogo(selectedFile);
             const data = {
              
               name: formData.name,
@@ -49,12 +82,11 @@ export default function RegisterForm(){
               phone_no: formData.phone_no,
               weburl: formData.weburl,
               address:formData.address,
-              logo:selectedFile,
-              contentType:selectedFile.type,
-          
+              logo:LogoId,
+    
             };
-            console.log(data);
-            console.log(selectedFile.type);
+         
+        
             const response = await fetch(
               "http://localhost:8000/publishers/register",
               {
@@ -75,8 +107,10 @@ export default function RegisterForm(){
                 logo:"",
                 address:"",
               });
-          
+              setFileName("");
               setSelectedFile(null);
+              alert("Submitted Successfully");
+              window.location.href = "/";
             } else {
               console.error("Failed to submit the form to the backend");
             }
@@ -191,7 +225,7 @@ export default function RegisterForm(){
                     <label htmlFor="fileInput"
                     className="appearance-none border border-gray-300 py-2 px-5 rounded-md w-full cursor-pointer"
                      >
-                    {selectedFile ? ` ${selectedFile.name}` : "Upload File"}
+                    {fileName ? ` ${fileName}` : "Upload File"}
                     </label>
                     
                     {errorMessage && <p className="text-red-500">{errorMessage}</p>}

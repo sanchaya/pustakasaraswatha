@@ -102,7 +102,7 @@ export default function Form(){
               publishedMonth:formData.publishedMonth
             };
   
-            console.log(data);
+         
             const bookResponse = await fetch(
               "http://localhost:8000/books/save-book-data",
               {

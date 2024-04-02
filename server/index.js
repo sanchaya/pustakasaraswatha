@@ -28,11 +28,10 @@ app.get('/', (req, res) => {
 
   app.post('/upload',async (req, res) => {
     try {
-      console.log("call");
+
       const body = req.body;
       const cover = await BookPhoto.create(body);
       cover.save();
-      console.log(cover._id);
       res.status(201).json({message:cover._id});
     } catch (error) {
       res.status(409).json({message:error.message});
@@ -49,13 +48,14 @@ app.get('/', (req, res) => {
             volume,
             edition,
             isbn,
+            price,
             bookCover,
             publishedYear,
             publishedMonth,
             seriesChecked,
             subject,
         } = req.body;
-        console.log(req.body);
+ 
        
 
         // Create a new Book document with photo reference
@@ -67,6 +67,7 @@ app.get('/', (req, res) => {
             volume,
             edition,
             isbn,
+            price,
             bookCover,
             publishedYear,
             publishedMonth,
@@ -134,10 +135,8 @@ app.post('/publishers/register',async(req,res)=>{
         logo
       
     } = req.body;
-    console.log(req.body);
-   
 
- 
+  
     const user = new Publisher({
       name,
       email,
@@ -157,6 +156,55 @@ app.post('/publishers/register',async(req,res)=>{
 }
 })
 
+app.get('/books/search', async (req, res) => {
+  try {
+    const { query, criteria } = req.query;
+    console.log("call seafch");
+    console.log(query, criteria);
+    let searchQuery = {};
+    if (criteria === 'bookTitle') {
+      searchQuery = { bookTitle: { $regex: new RegExp(query, 'i') } }; 
+    } else if (criteria === 'authorName') {
+      searchQuery = { authorName: { $regex: new RegExp(query, 'i') } };
+    } else if (criteria === 'publisherName') {
+      searchQuery = { publisherName: { $regex: new RegExp(query, 'i') } };
+    } else if (criteria === 'publishedYear') {
+      // Check if the query is a valid year
+      const year = parseInt(query);
+      if (!isNaN(year)) {
+        searchQuery = { publishedYear: year };
+      } else {
+        return res.status(400).json({ error: 'Invalid published year' });
+      }
+    } else {
+      return res.status(400).json({ error: 'Invalid search criteria' });
+    }
+
+    const searchResults = await Book.find(searchQuery);
+    console.log(searchResults);
+    if(searchResults.length>0){
+  
+    const booksWithPhoto = await Promise.all(searchResults.map(async (book) => {
+  
+      const book_photo = await BookPhoto.findById(book.bookCover);
+      const photoData = book_photo ? book_photo: null;
+
+      return {
+        ...book.toObject(),
+        book_photo: photoData,
+      };
+    }));
+ 
+    res.json(booksWithPhoto);
+  }
+  else{
+    res.json([]);
+  }
+  } catch (error) {
+    console.error('Error searching books:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 app.listen(PORT,()=>{
