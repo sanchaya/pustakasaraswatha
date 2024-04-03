@@ -81,10 +81,16 @@ export default function Form(){
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-     
+        if(!fileName){
+          setErrorMessage('Please upload a file');
+          return;
+        }
+
         try {
-        const photoId=  await createCover(selectedFile);
-        const seriesValue = seriesChecked ? "Yes" : "No";
+          const isValid = validateForm();
+          if (isValid) {
+          const photoId=  await createCover(selectedFile);
+          const seriesValue = seriesChecked ? "Yes" : "No";
         
             const data = {
               series: seriesValue,
@@ -136,13 +142,96 @@ export default function Form(){
             } else {
               console.error("Failed to submit the form to the backend");
             }
-        //   }
+          }
+          else{
+            console.error("Error validating the form");
+          }
         } catch (error) {
           console.error("Error submitting the form:", error);
         }
       };
     
-  
+      const validateForm = () => {
+        const {
+        publishedMonth,
+          pageCount,
+          isbn,
+         publishedYear,
+         price
+        } = formData;
+        console.log("call for validate")
+        if(price<=0){
+          alert("Price should be a positive number");
+          return false;
+        }
+        if (pageCount <= 0) {
+          alert("Total pages should be a positive number");
+          return false;
+        }
+        if(publishedMonth <=0 || publishedMonth>12){
+          alert("Invalid Published Month ");
+          return false;
+        }
+        if (!isValidYear(publishedYear)) {
+          alert("Invalid Published Year");
+          return false;
+        }
+        if(!isValidYearMonth(publishedMonth,publishedYear)){
+          alert("Invalid Month for Year");
+          return false;
+        }
+        if(isbn && !isValidISBN(isbn)){
+          alert("Invalid ISBN");
+          return false;
+        }
+
+        function isValidYear(year) {
+         
+          return /^\d{4}$/.test(year) && parseInt(year) >= 0 && parseInt(year) <= new Date().getFullYear();
+        }
+
+        function isValidISBN(str) {
+ 
+          str = str.replace(/[^0-9X]/gi, '');
+
+         if (str.length !== 10 && str.length !== 13) {
+            return false;
+          }
+
+          if (str.length === 13) {
+           let sum = 0;
+               for (let i = 0; i < 12; i++) {
+               const digit = parseInt(str[i]);
+                sum += i % 2 === 1 ? 3 * digit : digit;
+               }
+             const check = (10 - (sum % 10)) % 10;
+             return check === parseInt(str[str.length - 1]);
+            }
+
+          if (str.length === 10) {
+             let weight = 10;
+               let sum = 0;
+              for (let i = 0; i < 9; i++) {
+               const digit = parseInt(str[i]);
+               sum += weight * digit;
+               weight--;
+             }
+             let check = (11 - (sum % 11)) % 11;
+              if (check === 10) {
+               check = 'X';
+              }
+         return check === str[str.length - 1].toUpperCase();
+        }
+      }
+      function isValidYearMonth(publishedMonth,publishedYear){
+        if(publishedYear== new Date().getFullYear() && publishedMonth> new Date().getMonth()+1){
+          return false;
+        }
+        return true;
+      }
+        return true;
+      };
+    
     
     return (
         <>
@@ -177,11 +266,11 @@ export default function Form(){
                     <label>
                       Total Pages<span style={{ color: "red" }}>*</span>:
                     </label>
-                    <label>Author:</label>
-                    <label>Published Year:</label>
+                    <label>Author<span style={{ color: "red" }}>*</span>:</label>
+                    <label>Published Year<span style={{ color: "red" }}>*</span>:</label>
                     <label>ISBN:</label>
-                    <label>Thumbnail:</label>
-                    <label>Price:</label>
+                    <label>Thumbnail<span style={{ color: "red" }}>*</span>:</label>
+                    <label>Price<span style={{ color: "red" }}>*</span>:</label>
                     <label>Volume:</label>
                     <label>Edition:</label>
                     <label>Subject:</label>
@@ -218,6 +307,7 @@ export default function Form(){
                       name="authorName"
                       value={formData.authorName}
                       onChange={handleInputChange}
+                      required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                    
@@ -228,6 +318,7 @@ export default function Form(){
                         placeholder="Month"
                         value={formData.publishedMonth}
                         onChange={handleInputChange}
+                        required
                         style={{ padding: "10px", backgroundColor: "#dcdcdc", flex: "0.5", marginRight: "2px" }}
                       />
                       <input
@@ -236,6 +327,7 @@ export default function Form(){
                          placeholder="Year"
                         value={formData.publishedYear}
                         onChange={handleInputChange}
+                        required
                         style={{ padding: "10px", backgroundColor: "#dcdcdc", flex: "0.5", marginLeft: "2px" }}
                       />
                     </div>
@@ -256,9 +348,11 @@ export default function Form(){
                       value={formData.bookCover}
                       onChange={handleFileChange}
                     
+                    
                     />
                     <label htmlFor="fileInput"
                     className="appearance-none border border-gray-300 py-2 px-5 rounded-md w-full cursor-pointer"
+                 
                      >
                     {fileName ? ` ${fileName}` : "Upload File"}
                    
@@ -271,6 +365,7 @@ export default function Form(){
                       name="price"
                       value={formData.price}
                       onChange={handleInputChange}
+                      required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                      <input
@@ -317,6 +412,7 @@ export default function Form(){
                       name="seriesName"
                       value={formData.seriesName}
                       onChange={handleInputChange}
+                     required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                     )}

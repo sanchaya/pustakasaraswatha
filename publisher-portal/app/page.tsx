@@ -8,11 +8,11 @@ export default function Home() {
 
   const [bookData, setBookData]=useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  // const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = async (query: string|number , criteria: any) => {
     try {
- 
+      setSearchQuery(query);
       if (!query) {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
@@ -46,8 +46,8 @@ export default function Home() {
   },[]);
 
 
-  const filteredBooks = searchResults.length > 0 ? searchResults : bookData;
-
+  const filteredBooks = searchResults.length == 0 && !searchQuery ? bookData :searchResults ;
+  console.log(searchQuery);
   return (
   <>
    <Header/>
@@ -79,7 +79,9 @@ export default function Home() {
             </div>
           ))
         ) : (
-          <p>No matched results</p>
+     
+          <div className="text-sky-800">No matched results!</div>
+         
         )}
       </div>          
 

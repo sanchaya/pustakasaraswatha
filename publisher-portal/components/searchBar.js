@@ -20,6 +20,7 @@ const SearchBar = ({ onSearch }) => {
         <option value="authorName">Author Name</option>
         <option value="publisherName">Publisher Name</option>
         <option value="publishedYear">Published Year</option>
+        <option value="isbn">ISBN</option>
       </select>
       <input
         type="text"

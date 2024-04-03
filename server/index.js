@@ -87,23 +87,23 @@ app.get('/', (req, res) => {
 
 app.get('/books/details', async (req, res) => {
     try {
-      // Fetch all books from the Book collection
+  
       const books = await Book.find();
   
-      // Process each book to fetch corresponding photo data
+ 
       const booksWithPhoto = await Promise.all(books.map(async (book) => {
-        // Fetch photo data using the photo ID stored in the book
+       
         const book_photo = await BookPhoto.findById(book.bookCover);
         const photoData = book_photo ? book_photo: null;
   
-        // Return book details along with photo data
+   
         return {
           ...book.toObject(),
           book_photo: photoData,
         };
       }));
  
-      // Send the response with books and corresponding photo data
+ 
       res.status(200).json(booksWithPhoto);
     } catch (error) {
       console.error('Error fetching book details:', error);
@@ -113,11 +113,11 @@ app.get('/books/details', async (req, res) => {
 
 app.post('/publishers/logo',async(req,res)=>{
   try {
-    console.log("call logo");
+
     const body = req.body;
     const logo = await Logo.create(body);
     logo.save();
-    console.log(logo._id);
+
     res.status(201).json({message:logo._id});
   } catch (error) {
     res.status(409).json({message:error.message});
@@ -159,8 +159,7 @@ app.post('/publishers/register',async(req,res)=>{
 app.get('/books/search', async (req, res) => {
   try {
     const { query, criteria } = req.query;
-    console.log("call seafch");
-    console.log(query, criteria);
+   
     let searchQuery = {};
     if (criteria === 'bookTitle') {
       searchQuery = { bookTitle: { $regex: new RegExp(query, 'i') } }; 
@@ -176,12 +175,16 @@ app.get('/books/search', async (req, res) => {
       } else {
         return res.status(400).json({ error: 'Invalid published year' });
       }
-    } else {
+    } 
+    else if(criteria === 'isbn'){
+        searchQuery = {isbn:{$regex: new RegExp(query,'i')}};
+    }
+    else {
       return res.status(400).json({ error: 'Invalid search criteria' });
     }
 
     const searchResults = await Book.find(searchQuery);
-    console.log(searchResults);
+  
     if(searchResults.length>0){
   
     const booksWithPhoto = await Promise.all(searchResults.map(async (book) => {

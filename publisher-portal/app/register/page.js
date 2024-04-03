@@ -72,8 +72,13 @@ export default function RegisterForm(){
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        if(!fileName){
+          setErrorMessage("Please upload a logo");
+          return;
+        }
         try {
+            const isValid = validateForm();
+            if(isValid){
             const LogoId=  await createLogo(selectedFile);
             const data = {
              
@@ -114,15 +119,47 @@ export default function RegisterForm(){
             } else {
               console.error("Failed to submit the form to the backend");
             }
-        //   }
+          }
+          else{
+            console.error("Error validating the form");
+          }
         } catch (error) {
           console.error("Error submitting the form:", error);
         }
       };
     
-   
-    
+      const validateForm = () => {
+        const {
+        phone,
+        email
+        } = formData;
+        console.log("call for validate")
+        if(!isValidEmailAddress(email)){
+            alert("Invalid Email ");
+            return false;
+        }
 
+        if(!isValidPhoneNumber(phone)){
+          alert("Invalid Phone number");
+          return false;
+        }
+        function isValidPhoneNumber(phoneNumber) {
+       
+          const phonePattern = /^\d{10}$/; // Assumes 10-digit phone numbers
+  
+          return phonePattern.test(phoneNumber);
+      }
+      
+
+      function isValidEmailAddress(email) {
+ 
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          
+          return emailPattern.test(email);
+      }
+        return true;
+      };
+ 
     
     return (
         <>
@@ -152,10 +189,10 @@ export default function RegisterForm(){
                   >
                     
                     <label>
-                      Publisher Name<span style={{ color: "red" }}>*</span>:
+                      Publisher Name:
                     </label>
                     <label>
-                      Email<span style={{ color: "red" }}>*</span>:
+                      Email:
                     </label>
                     <label>Phone_no:</label>
                     <label>Website Address:</label>
@@ -193,6 +230,7 @@ export default function RegisterForm(){
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
+                      required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                    
@@ -202,6 +240,7 @@ export default function RegisterForm(){
                       name="weburl"
                       value={formData.weburl}
                       onChange={handleInputChange}
+                      required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                       <input
@@ -209,6 +248,7 @@ export default function RegisterForm(){
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
+                      required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
                     <div className='relative'>
