@@ -191,12 +191,13 @@ export default function RegisterForm(){
                     <label>
                       Publisher Name:
                     </label>
+                    <label>Address:</label>
                     <label>
                       Email:
                     </label>
                     <label>Phone_no:</label>
                     <label>Website Address:</label>
-                    <label>Home Address:</label>
+                    
                     <label>Logo:</label>
                   
                   </div>
@@ -212,6 +213,14 @@ export default function RegisterForm(){
                       type="text"
                       name="name"
                       value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
+                    />
+                    <input
+                      type="string"
+                      name="address"
+                      value={formData.address}
                       onChange={handleInputChange}
                       required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
@@ -243,14 +252,7 @@ export default function RegisterForm(){
                       required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
                     />
-                      <input
-                      type="string"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                    />
+                      
                     <div className='relative'>
                       <input
                       type="file"
