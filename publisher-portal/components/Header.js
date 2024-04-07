@@ -1,25 +1,15 @@
-import React,{useEffect,useState} from 'react';
+import React from 'react';
 import Link from 'next/link';
+
 import {
-    SignInButton,
     UserButton,
-    useClerk,
     useUser,
+    SignInButton,
   } from "@clerk/nextjs";
 
 export default function Header(){
 
     const { user } = useUser();
-    const [userId, setUserId] = useState(null);
-    const { signOut } = useClerk();
-
-  
-    useEffect(() => {
-        if (user) {
-          setUserId(user.id);
-          console.log("User ID:", user.id);
-        }
-      }, [user, userId]);
 
     return(
         <>
@@ -42,8 +32,8 @@ export default function Header(){
             ) : (
                 <>
                     <div className='mr-5'>
-                    <button className={"bg-sky-800 text-white p-3 rounded-2xl "}>
-                        <SignInButton />
+                    <button className={"bg-sky-800 text-white p-3 rounded-2xl "} >
+                    <SignInButton redirectUrl='/register'/>
                     </button>
                     </div>
                 </>

@@ -26,6 +26,25 @@ app.get('/', (req, res) => {
     res.send('App is running on port 8000..');
   });
 
+  app.get('/publishers/check/:email',async(req,res)=>{
+    try{
+      const email = req.params.email;
+      // console.log(email);
+      const user = await Publisher.findOne({email});
+      // console.log(user);
+      if(user===null){
+        return res.status(401).json({"message":"User does not exists"});
+      }
+      else{
+        return res.status(200).json({ "isRegistered": true });
+      }
+    }
+    catch(error){
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.post('/upload',async (req, res) => {
     try {
 

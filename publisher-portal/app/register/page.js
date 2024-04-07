@@ -1,12 +1,17 @@
 "use client"
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
+import { useUser,useClerk } from '@clerk/nextjs';
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm(){
- 
+  const { user } = useUser();
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({logo:""});
     const [fileName, setFileName]=useState("");
+    const { signOut } = useClerk();
+    const [userId, setUserId] = useState(null);
+    const router = useRouter();
 
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
@@ -36,6 +41,53 @@ export default function RegisterForm(){
     });
   
     
+    useEffect(() => {
+      if (user) {
+        setUserId(user.id);
+        console.log("User ID:", user.id);
+      }
+    }, [user, userId]);
+
+
+    useEffect(() => {
+
+      const checkUserLoggedIn = async () => {
+       
+        if (user===null){
+          window.location.href = "/";
+        } else {
+
+          const isPublisher = window.confirm("Register if you are a publisher.");
+          if (!isPublisher) {
+            await signOut();
+            router.push("/");
+          } else {
+           
+            // Check if the user is already registered as a publisher
+            try {
+       
+              const response = await axios.get(`http://localhost:8000/publishers/check/${user.emailAddresses[0]}`);
+              if (response.data.message !== "User does not exist") {
+             
+                window.location.href = "/";
+              }
+            } catch (error) {
+              console.error("Error checking user registration:", error);
+            }
+
+             // Prefill email if available
+             if(user){
+              setFormData((prevData) => ({
+                ...prevData,
+                email: user.emailAddresses[0],
+              }));
+            }
+          }
+        }
+      };
+      checkUserLoggedIn();
+    }, [user]);
+
       const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -133,7 +185,7 @@ export default function RegisterForm(){
         phone,
         email
         } = formData;
-        console.log("call for validate")
+    
         if(!isValidEmailAddress(email)){
             alert("Invalid Email ");
             return false;
@@ -232,6 +284,7 @@ export default function RegisterForm(){
                       onChange={handleInputChange}
                       required
                       style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
+                      disabled={formData.email !== ""}
                     />
                   
                     <input

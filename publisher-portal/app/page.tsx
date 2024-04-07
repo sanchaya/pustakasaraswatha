@@ -47,7 +47,7 @@ export default function Home() {
 
 
   const filteredBooks = searchResults.length == 0 && !searchQuery ? bookData :searchResults ;
-  console.log(searchQuery);
+
   return (
   <>
    <Header/>
