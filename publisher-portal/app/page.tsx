@@ -4,15 +4,29 @@ import Header from '../components/Header';
 import React,{useState, useEffect} from 'react';
 import SearchBar from '../components/searchBar';
 
+interface Book {
+  bookTitle: string;
+  authorName: string;
+  publishedYear: number;
+  subject: string;
+  price: number;
+  
+  book_photo: {
+    bookCover: string; // Assuming bookCover is a string
+  };
+  // Add more properties as needed
+}
+
 export default function Home() {
 
   const [bookData, setBookData]=useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
 
   const handleSearch = async (query: string|number , criteria: any) => {
     try {
-      setSearchQuery(query);
+      setSearchQuery(String(query));
       if (!query) {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
@@ -45,8 +59,14 @@ export default function Home() {
     fetchData();
   },[]);
 
-
-  const filteredBooks = searchResults.length == 0 && !searchQuery ? bookData :searchResults ;
+  useEffect(() => {
+    if (searchResults.length === 0 && !searchQuery) {
+      setFilteredBooks(bookData);
+    } else {
+      setFilteredBooks(searchResults);
+    }
+  }, [searchResults, bookData, searchQuery]);
+  
 
   return (
   <>
