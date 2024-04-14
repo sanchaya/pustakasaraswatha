@@ -69,7 +69,7 @@ export default function Form(){
 
       const createCover = async(newCover)=>{
         try {
-          const response = await axios.post('http://localhost:8000/upload', newCover);
+          const response = await axios.post('https://pubserver.sanchaya.net/upload', newCover);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -110,7 +110,7 @@ export default function Form(){
   
          
             const bookResponse = await fetch(
-              "http://localhost:8000/books/save-book-data",
+              "https://pubserver.sanchaya.net/books/save-book-data",
               {
                 method: "POST",
                 headers: {

@@ -66,7 +66,7 @@ export default function RegisterForm(){
             // Check if the user is already registered as a publisher
             try {
        
-              const response = await axios.get(`http://localhost:8000/publishers/check/${user.emailAddresses[0]}`);
+              const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
               if (response.data.message !== "User does not exist") {
              
                 window.location.href = "/";
@@ -112,7 +112,7 @@ export default function RegisterForm(){
 
       const createLogo = async(newLogo)=>{
         try {
-          const response = await axios.post('http://localhost:8000/publishers/logo', newLogo);
+          const response = await axios.post('https://pubserver.sanchaya.net/publishers/logo', newLogo);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -142,10 +142,10 @@ export default function RegisterForm(){
               logo:LogoId,
     
             };
-         
+            console.log(data.email);
         
             const response = await fetch(
-              "http://localhost:8000/publishers/register",
+              "https://pubserver.sanchaya.net/publishers/register",
               {
                 method: "POST",
                 headers: {
@@ -247,7 +247,7 @@ export default function RegisterForm(){
                     <label>
                       Email:
                     </label>
-                    <label>Phone_no:</label>
+                    <label>Phone:</label>
                     <label>Website Address:</label>
                     
                     <label>Logo:</label>
