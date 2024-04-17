@@ -49,44 +49,44 @@ export default function RegisterForm(){
     }, [user, userId]);
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-      const checkUserLoggedIn = async () => {
+    //   const checkUserLoggedIn = async () => {
        
-        if (user===null){
-          window.location.href = "/";
-        } else {
+    //     if (user===null){
+    //       window.location.href = "/";
+    //     } else {
 
-          const isPublisher = window.confirm("Register if you are a publisher.");
-          if (!isPublisher) {
-            await signOut();
-            router.push("/");
-          } else {
+    //       const isPublisher = window.confirm("Register if you are a publisher.");
+    //       if (!isPublisher) {
+    //         await signOut();
+    //         router.push("/");
+    //       } else {
            
-            // Check if the user is already registered as a publisher
-            try {
+    //         // Check if the user is already registered as a publisher
+    //         try {
        
-              const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
-              if (response.data.message !== "User does not exist") {
+    //           const response = await axios.get(`http://localhost:8000/publishers/check/${user.emailAddresses[0]}`);
+    //           if (response.data.message !== "User does not exist") {
              
-                window.location.href = "/";
-              }
-            } catch (error) {
-              console.error("Error checking user registration:", error);
-            }
+    //             window.location.href = "/";
+    //           }
+    //         } catch (error) {
+    //           console.error("Error checking user registration:", error);
+    //         }
 
-             // Prefill email if available
-             if(user){
-              setFormData((prevData) => ({
-                ...prevData,
-                email: user.emailAddresses[0],
-              }));
-            }
-          }
-        }
-      };
-      checkUserLoggedIn();
-    }, [user]);
+    //          // Prefill email if available
+    //          if(user){
+    //           setFormData((prevData) => ({
+    //             ...prevData,
+    //             email: user.emailAddresses[0],
+    //           }));
+    //         }
+    //       }
+    //     }
+    //   };
+    //   checkUserLoggedIn();
+    // }, [user]);
 
       const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -112,7 +112,7 @@ export default function RegisterForm(){
 
       const createLogo = async(newLogo)=>{
         try {
-          const response = await axios.post('https://pubserver.sanchaya.net/publishers/logo', newLogo);
+          const response = await axios.post('http://localhost:8000/publishers/logo', newLogo);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -145,7 +145,7 @@ export default function RegisterForm(){
             console.log(data.email);
         
             const response = await fetch(
-              "https://pubserver.sanchaya.net/publishers/register",
+              "http://localhost:8000/publishers/register",
               {
                 method: "POST",
                 headers: {

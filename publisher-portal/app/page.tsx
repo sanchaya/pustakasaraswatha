@@ -3,7 +3,7 @@ import Image from "next/image";
 import Header from '../components/Header';
 import React,{useState, useEffect} from 'react';
 import SearchBar from '../components/searchBar';
-
+import Footer from '../components/Footer';
 interface Book {
   bookTitle: string;
   authorName: string;
@@ -31,7 +31,7 @@ export default function Home() {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
       }
-      const response = await fetch(`https://pubserver.sanchaya.net/books/search?query=${encodeURIComponent(query)}&criteria=${criteria}`);
+      const response = await fetch(`http://localhost:8000/books/search?query=${encodeURIComponent(query)}&criteria=${criteria}`);
       if (!response.ok) {
         throw new Error('Failed to search books');
       }
@@ -43,7 +43,7 @@ export default function Home() {
   };
   const fetchData = async()=>{
     const response = await fetch(
-     "https://pubserver.sanchaya.net/books/details"
+     "http://localhost:8000/books/details"
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -74,7 +74,7 @@ export default function Home() {
    <div className="mx-auto flex justify-center p-4">
     <SearchBar onSearch={handleSearch} />
    </div>
-  <div className="grid grid-cols-7 gap-2 jusify-between align-center p-5 ">
+  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-5">
         
   {filteredBooks.length > 0 ? (
           filteredBooks.map((book, index) => (
@@ -103,7 +103,9 @@ export default function Home() {
           <div className="text-sky-800">No matched results!</div>
          
         )}
-      </div>          
+      </div>    
+      <div className="bottom-0 mt-8"><Footer/>
+        </div>      
 
 </>
   );

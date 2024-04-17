@@ -69,7 +69,7 @@ export default function Form(){
 
       const createCover = async(newCover)=>{
         try {
-          const response = await axios.post('https://pubserver.sanchaya.net/upload', newCover);
+          const response = await axios.post('http://localhost:8000/upload', newCover);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -110,7 +110,7 @@ export default function Form(){
   
          
             const bookResponse = await fetch(
-              "https://pubserver.sanchaya.net/books/save-book-data",
+              "http://localhost:8000/books/save-book-data",
               {
                 method: "POST",
                 headers: {
@@ -241,9 +241,10 @@ export default function Form(){
           <div className="p-4">
             <div className=" p-4 rounded-lg shadow-custom ">
               <form onSubmit={handleSubmit}>
-                <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center col-span-2">
+                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center col-span-2">
                   Enter the Book Details
                 </h1>
+             
                 <div
                   style={{
                     display: "grid",
@@ -277,6 +278,7 @@ export default function Form(){
                     <label>Is Related to Series?:</label>
                     {seriesChecked && (<label>SeriesName<span style={{ color: "red" }}>*</span>:</label>)}
                   </div>
+            
                   <div
                     style={{
                       display: "flex",
