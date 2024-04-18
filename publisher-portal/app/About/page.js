@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-
-import Header from '../../components/Header';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 export default function About() {
     
     return(
@@ -22,7 +22,8 @@ export default function About() {
         </div>
        </div>
     
-     
+       <div className="bottom-0 mt-8"><Footer/>
+      </div> 
       
         </>
     )

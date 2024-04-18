@@ -31,7 +31,7 @@ export default function Home() {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
       }
-      const response = await fetch(`http://localhost:8000/books/search?query=${encodeURIComponent(query)}&criteria=${criteria}`);
+      const response = await fetch(`https://pubserver.sanchaya.net/books/search?query=${encodeURIComponent(query)}&criteria=${criteria}`);
       if (!response.ok) {
         throw new Error('Failed to search books');
       }
@@ -43,7 +43,7 @@ export default function Home() {
   };
   const fetchData = async()=>{
     const response = await fetch(
-     "http://localhost:8000/books/details"
+     "https://pubserver.sanchaya.net/books/details"
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -105,7 +105,7 @@ export default function Home() {
         )}
       </div>    
       <div className="bottom-0 mt-8"><Footer/>
-        </div>      
+      </div>      
 
 </>
   );

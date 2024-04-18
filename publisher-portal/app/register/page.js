@@ -49,44 +49,39 @@ export default function RegisterForm(){
     }, [user, userId]);
 
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //   const checkUserLoggedIn = async () => {
+      const checkUserLoggedIn = async () => {
        
-    //     if (user===null){
-    //       window.location.href = "/";
-    //     } else {
+        if (user===null){
+          window.location.href = "/";
+        } else {
 
-    //       const isPublisher = window.confirm("Register if you are a publisher.");
-    //       if (!isPublisher) {
-    //         await signOut();
-    //         router.push("/");
-    //       } else {
            
-    //         // Check if the user is already registered as a publisher
-    //         try {
-       
-    //           const response = await axios.get(`http://localhost:8000/publishers/check/${user.emailAddresses[0]}`);
-    //           if (response.data.message !== "User does not exist") {
+            // Check if the user is already registered as a publisher
+            try {
+              console.log(user.emailAddresses[0]);
+              const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
+              if (response.data.message !== "User does not exist") {
              
-    //             window.location.href = "/";
-    //           }
-    //         } catch (error) {
-    //           console.error("Error checking user registration:", error);
-    //         }
+                window.location.href = "/";
+              }
+            } catch (error) {
+              console.error("Error checking user registration:", error);
+            }
 
-    //          // Prefill email if available
-    //          if(user){
-    //           setFormData((prevData) => ({
-    //             ...prevData,
-    //             email: user.emailAddresses[0],
-    //           }));
-    //         }
-    //       }
-    //     }
-    //   };
-    //   checkUserLoggedIn();
-    // }, [user]);
+             // Prefill email if available
+             if(user){
+              setFormData((prevData) => ({
+                ...prevData,
+                email: user.emailAddresses[0],
+              }));
+            }
+          }
+        }
+      
+      checkUserLoggedIn();
+    }, [user]);
 
       const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -112,7 +107,7 @@ export default function RegisterForm(){
 
       const createLogo = async(newLogo)=>{
         try {
-          const response = await axios.post('http://localhost:8000/publishers/logo', newLogo);
+          const response = await axios.post('https://pubserver.sanchaya.net/publishers/logo', newLogo);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -135,7 +130,7 @@ export default function RegisterForm(){
             const data = {
              
               name: formData.name,
-              email: formData.email,
+              email: formData.email.emailAddress,
               phone_no: formData.phone_no,
               weburl: formData.weburl,
               address:formData.address,
@@ -145,7 +140,7 @@ export default function RegisterForm(){
             console.log(data.email);
         
             const response = await fetch(
-              "http://localhost:8000/publishers/register",
+              "https://pubserver.sanchaya.net/publishers/register",
               {
                 method: "POST",
                 headers: {
@@ -185,8 +180,8 @@ export default function RegisterForm(){
         phone,
         email
         } = formData;
-    
-        if(!isValidEmailAddress(email)){
+        console.log(email.emailAddress);
+        if(!isValidEmailAddress(email.emailAddress)){
             alert("Invalid Email ");
             return false;
         }
@@ -220,7 +215,7 @@ export default function RegisterForm(){
          
           <div className="p-16">
             <div className=" p-4 rounded-lg shadow-custom ">
-              <form onSubmit={handleSubmit}>
+              {/* <form onSubmit={handleSubmit}>
                 <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center col-span-2">
                   Register
                 </h1>
@@ -334,7 +329,60 @@ export default function RegisterForm(){
                     Submit
                   </button>
                 </div>
-              </form>
+              </form> */}
+              <form onSubmit={handleSubmit} className="max-w-full px-4">
+  <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center">Register</h1>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="flex flex-col">
+      <label className="text-sky-600">
+        Publisher Name:
+      </label>
+      <input type="text" name="name" placeholder='Enter publisher name' value={formData.name} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+    </div>
+    <div className="flex flex-col">
+      <label className="text-sky-600">
+        Address:
+      </label>
+      <input type="string" name="address" placeholder='Enter home address' value={formData.address} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+    </div>
+    <div className="flex flex-col">
+      <label className="text-sky-600">
+        Email:
+      </label>
+      <input type="email" name="email" value={formData.email} onChange={handleInputChange} required disabled={formData.email !== ""} className="px-4 py-2 rounded-md" />
+    </div>
+    <div className="flex flex-col">
+      <label className="text-sky-600">
+        Phone:
+      </label>
+      <input type="number" name="phone" placeholder='Enter phone number' value={formData.phone} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+    </div>
+    <div className="flex flex-col">
+      <label className="text-sky-600">
+        Website Address:
+      </label>
+      <input type="string" name="weburl" placeholder='Enter website address' value={formData.weburl} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+    </div>
+    <div className="flex flex-col">
+      <label className="text-sky-600 mb-3">
+        Logo:
+      </label>
+      <div className="relative">
+        <input type="file" accept="image/*" name="logo" className="hidden" id="fileInput" value={formData.logo} onChange={handleFileChange} />
+        <label htmlFor="fileInput" className="px-4 py-2 rounded-md w-full cursor-pointer border border-gray-300">
+          {fileName ? ` ${fileName}` : "Upload File"}
+        </label>
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      </div>
+    </div>
+  </div>
+  <div className="mt-8 flex justify-end">
+    <button className="bg-sky-800 hover:bg-sky-600 text-white px-6 py-3 rounded-md" type="submit">
+      Submit
+    </button>
+  </div>
+</form>
+
             </div>
           
           </div>
