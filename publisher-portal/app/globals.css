@@ -44,18 +44,24 @@
     }
     
     .bookCover {
-      margin-bottom: 10px; /* Adjust spacing between cover and details */
+      margin-bottom: 10px; 
     }
     
     .bookDetails {
-      text-align: center;
+      text-align: left;
     }
-    
+    .bold-text {
+      font-weight: bold;
+    }
+    .font-bold {
+      font-weight: bold;
+      font-size: 1rem; 
+    }
     .kannada-text-container {
       text-align: justify;
-      font-family: "Noto Sans Kannada", sans-serif; /* Specify Kannada font */
-      font-size: 16px; /* Adjust font size as needed */
-      line-height: 1.5; /* Adjust line height as needed */
+      font-family: "Noto Sans Kannada", sans-serif; 
+      font-size: 16px; 
+      line-height: 1.5;
       width: 60%;
       height: 50%;
     }

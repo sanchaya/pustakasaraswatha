@@ -71,9 +71,10 @@ export default function Home() {
   return (
   <>
    <Header/>
-   <div className="mx-auto flex justify-center p-4">
+   <div className="mx-auto flex justify-center p-4 mb-4 mt-4">
     <SearchBar onSearch={handleSearch} />
    </div>
+   <hr className="w-full border-t border-black opacity-20 mb-4" />
   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-5">
         
   {filteredBooks.length > 0 ? (
@@ -89,11 +90,11 @@ export default function Home() {
                   />
                 </div>
                 <div className="bookDetails">
-                  <h2>{book.bookTitle}</h2>
-                  {book.authorName && (<p>Author: {book.authorName}</p>)} 
-                  {book.publishedYear && (<p>Published Year:{book.publishedYear}</p>)}
-                  {book.subject && (<p>Subject: {book.subject}</p>)}
-                  {book.price && (<p>Price: {book.price}</p>)}
+                  <div className="font-bold">{book.bookTitle}</div>
+                  {book.authorName && (<p><span className="bold-text">Author: </span>{book.authorName}</p>)} 
+                  {book.publishedYear && (<p><span className="bold-text">Published Year: </span>{book.publishedYear}</p>)}
+                  {book.subject && (<p><span className="bold-text">Subject: </span> {book.subject}</p>)}
+                  {book.price && (<p><span className="bold-text">Price: </span>{book.price}</p>)}
                 </div>
               </div>
             </div>
