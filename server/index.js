@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const app = express();
-const PORT = 8000;
+const PORT = 3002;
 const connectDB = require('./connection');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-    res.send('App is running on port 8000..');
+    res.send('App is running on port 3002..');
   });
 
   app.get('/publishers/check/:email',async(req,res)=>{
