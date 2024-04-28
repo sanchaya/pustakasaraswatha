@@ -22,7 +22,7 @@ export default function IsPublisher(req,res){
     const { signOut } = useClerk();
     const [userId, setUserId] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
-    const language= req.params.lang;
+    const language= req.params.lang||'kn';
     useEffect(() => {
         if (user) {
           setUserId(user.id);

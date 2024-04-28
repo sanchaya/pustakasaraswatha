@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from "next/link";
 export default function Contact(req,res) {
-    const language=req.params.lang;
+    const language=req.params.lang ||'kn';
     return(
         <>
         <div className='mb-20 '>

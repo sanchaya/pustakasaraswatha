@@ -9,7 +9,7 @@ export default function Form(req,res){
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({bookCover:""});
     const [fileName, setFileName]=useState("");
-    const language=req.params.lang;
+    const language=req.params.lang ||'kn';
 
   const handleFileChange = async(event) => {
     const file = event.target.files[0];

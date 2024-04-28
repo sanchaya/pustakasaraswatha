@@ -1,10 +1,10 @@
 "use client"
 import Image from "next/image";
-import Header from '../../components/Header';
+import Header from '@/components/Header';
 import React,{useState, useEffect} from 'react';
 import SearchBar from '@/components/searchBar';
-import Footer from '../../components/Footer';
-import Translation from '../../components/Translation';
+import Footer from '@/components/Footer';
+import Translation from '@/components/Translation';
 import LanguageToggle from '../../components/LanguageToggle';
 
 interface Book {
@@ -28,7 +28,7 @@ interface Book {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   // const [language, setLanguage] = useState('en');
-  const language = req.params.lang;
+  const language = req.params.lang ||'kn';
 
   // const handleLanguageChange = (selectedLanguage: React.SetStateAction<string>) => {
   //   setLanguage(selectedLanguage);
