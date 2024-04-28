@@ -3,8 +3,8 @@ import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import { useUser,useClerk } from '@clerk/nextjs';
 import { useRouter } from "next/navigation";
-
-export default function RegisterForm(){
+import Translation from '@/components/Translation';
+export default function RegisterForm(req,res){
   const { user } = useUser();
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({logo:""});
@@ -12,7 +12,7 @@ export default function RegisterForm(){
     const { signOut } = useClerk();
     const [userId, setUserId] = useState(null);
     const router = useRouter();
-
+    const language = req.params.lang;
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
     
@@ -54,7 +54,7 @@ export default function RegisterForm(){
       const checkUserLoggedIn = async () => {
        
         if (user===null){
-          window.location.href = "/";
+          window.location.href = `/${language}`;
         } else {
 
            
@@ -64,7 +64,7 @@ export default function RegisterForm(){
               const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
               if (response.data.message !== "User does not exist") {
              
-                window.location.href = "/";
+                window.location.href = `/${language}`;
               }
             } catch (error) {
               console.error("Error checking user registration:", error);
@@ -162,7 +162,7 @@ export default function RegisterForm(){
               setFileName("");
               setSelectedFile(null);
               alert("Submitted Successfully");
-              window.location.href = "/";
+              window.location.href = `/${language}`;
             } else {
               console.error("Failed to submit the form to the backend");
             }
@@ -335,37 +335,37 @@ export default function RegisterForm(){
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Publisher Name:
+      <Translation language={language} textKey="publisher" />:
       </label>
       <input type="text" name="name" placeholder='Enter publisher name' value={formData.name} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Address:
+      <Translation language={language} textKey="publisher_address" />:
       </label>
       <input type="string" name="address" placeholder='Enter home address' value={formData.address} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Email:
+      <Translation language={language} textKey="email" />:
       </label>
       <input type="email" name="email" value={formData.email} onChange={handleInputChange} required disabled={formData.email !== ""} className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Phone:
+      <Translation language={language} textKey="contact_no"/>:
       </label>
       <input type="number" name="phone" placeholder='Enter phone number' value={formData.phone} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Website Address:
+      <Translation language={language} textKey="web_address" />:
       </label>
       <input type="string" name="weburl" placeholder='Enter website address' value={formData.weburl} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600 mb-3">
-        Logo:
+      <Translation language={language} textKey="logo" />:
       </label>
       <div className="relative">
         <input type="file" accept="image/*" name="logo" className="hidden" id="fileInput" value={formData.logo} onChange={handleFileChange} />

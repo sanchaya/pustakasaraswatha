@@ -3,12 +3,13 @@ import React,{useState, useEffect} from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import axios from 'axios';
-
-export default function Form(){
+import Translation from '@/components/Translation';
+export default function Form(req,res){
     const [seriesChecked, setSeriesChecked]=useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({bookCover:""});
     const [fileName, setFileName]=useState("");
+    const language=req.params.lang;
 
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
@@ -236,7 +237,7 @@ export default function Form(){
     
     return (
         <>
-         <Header/>
+         <Header language={language}/>
         <main className="flex flex-col items-center justify-between ">
          
           <div className="p-4">
@@ -432,25 +433,25 @@ export default function Form(){
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Book Name<span className="text-red-600">*</span>:
+      <Translation language={language} textKey="book_name" />:<span className="text-red-600">*</span>:
       </label>
       <input type="text" name="bookTitle" placeholder='Enter book title' value={formData.bookTitle} onChange={handleInputChange} className="px-4 py-2 bg-black-300 rounded-md" required  />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Total Pages<span className="text-red-600">*</span>:
+      <Translation language={language} textKey="pages" /><span className="text-red-600">*</span>:
       </label>
-      <input type="number" name="pageCount" placeholder='Enter book title' value={formData.pageCount} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
+      <input type="number" name="pageCount" placeholder='Enter total pages' value={formData.pageCount} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Author<span className="text-red-600">*</span>:
+      <Translation language={language} textKey="author" /><span className="text-red-600">*</span>:
       </label>
       <input type="text" name="authorName" placeholder='Enter author name' value={formData.authorName} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Published Year<span className="text-red-600">*</span>:
+      <Translation language={language} textKey="year" /><span className="text-red-600">*</span>:
       </label>
       <div className="flex">
         <input type="number" name="publishedMonth" placeholder="Month" value={formData.publishedMonth} onChange={handleInputChange} required className="px-4 py-2  rounded-md flex-1 mr-1" />
@@ -465,7 +466,7 @@ export default function Form(){
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600 mb-3">
-        Thumbnail<span className="text-red-600 ">*</span>:
+      <Translation language={language} textKey="thumbnail" /><span className="text-red-600 ">*</span>:
       </label>
       <div className="relative">
         <input type="file" accept="image/*" name="bookCover" className="hidden mt-2" id="fileInput" value={formData.bookCover} onChange={handleFileChange} />
@@ -477,38 +478,38 @@ export default function Form(){
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Price<span className="text-red-600">*</span>:
+      <Translation language={language} textKey="price" /><span className="text-red-600">*</span>:
       </label>
       <input type="number" name="price" placeholder='Enter price' value={formData.price} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Volume:
+      <Translation language={language} textKey="volume" />:
       </label>
       <input type="string" name="volume" placeholder='Enter volume' value={formData.volume} onChange={handleInputChange} className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Edition:
+      <Translation language={language} textKey="edition" />:
       </label>
       <input type="string" name="edition" placeholder='Enter edition' value={formData.edition} onChange={handleInputChange} className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-        Subject:
+      <Translation language={language} textKey="subject" />:
       </label>
       <input type="string" name="subject" placeholder='Enter subject/genre' value={formData.subject} onChange={handleInputChange} className="px-4 py-2  rounded-md" />
     </div>
     <div className="flex items-center">
       <input type="checkbox" id="series" name="series" checked={seriesChecked} onChange={handleCorrectionChange} className="transform scale-200 mr-2" />
       <label htmlFor="series" className="text-sky-600">
-        Is Related to Series?
+      <Translation language={language} textKey="is_series" />
       </label>
     </div>
     {seriesChecked && (
       <div className="flex flex-col">
         <label className="text-sky-600">
-          Series Name<span className="text-red-600">*</span>:
+        <Translation language={language} textKey="series_name" /><span className="text-red-600">*</span>:
         </label>
         <input type="string" name="seriesName" placeholder='Enter series name' value={formData.seriesName} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
       </div>

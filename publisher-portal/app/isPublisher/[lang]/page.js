@@ -16,13 +16,13 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
   
-export default function IsPublisher(){
+export default function IsPublisher(req,res){
     const router = useRouter();
     const { user } = useUser();
     const { signOut } = useClerk();
     const [userId, setUserId] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
-
+    const language= req.params.lang;
     useEffect(() => {
         if (user) {
           setUserId(user.id);
@@ -32,11 +32,11 @@ export default function IsPublisher(){
   
 const handleLogout = async()=>{
   await signOut();
-  router.push('/');
+  router.push(`/${language}`);
 }
 
 const handleRegister=()=>{
-  router.push('/register');
+  router.push(`/register/${language}`);
 }
 
   

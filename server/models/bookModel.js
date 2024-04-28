@@ -17,7 +17,7 @@ const bookSchema = new mongoose.Schema({
     isbn:String,
     price:Number,
     userId:String,
-    userName:String,
+    publisherName:String,
     bookCover: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'BookPhoto', // Reference to the BookPhoto collection

@@ -1,7 +1,7 @@
 import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
-    publicRoutes:['/','/About','/Contact'],
+    publicRoutes:['/','/en','/kn','/About/kn','/Contact/kn','/About/en','/Contact/en'],
     ignoredRoutes: ["/facebook.png", "/twitter.webp", "/sanchaya.jpg"]
 });
 

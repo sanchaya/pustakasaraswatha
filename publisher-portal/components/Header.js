@@ -6,11 +6,17 @@ import {
     useUser,
     SignInButton,
   } from "@clerk/nextjs";
+import Translation from '../components/Translation';
+import LanguageToggle from '../components/LanguageToggle';
 
-export default function Header(){
+export default function Header({language}){
     const [showMenu, setShowMenu] = useState(false);
     const { user } = useUser();
+    const [selectedLanguage,setLanguage]=useState('en');
 
+    const handleLanguageChange = (selectedLanguage) => {
+      setLanguage(selectedLanguage);
+    };
     return(
         <>
        
@@ -35,14 +41,15 @@ export default function Header(){
             {user ? (
                 <>
                  <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between w-full sm:w-auto ml-2`}>
-                    <div className='p-4'>
+                    <div className='flex flex-row p-4 gap-4'>
                     <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                    {/* <LanguageToggle onChange={handleLanguageChange} /> */}
                     </div>
                     <div className='flex flex-row gap-16 p-4'>
-                <Link href={"/"} className="no-underline text-black">Home</Link>
-                <Link href="/About" className="no-underline text-black">About Us</Link>
-                <Link href="/dashboard" className="no-underline text-black">Dashboard</Link>
-                <Link href="/Contact" className="no-underline text-black">Contact Us</Link>
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
+                <Link href={`/Contact/${language}`} className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
                     <Image src="/facebook.png" alt="facebook" width={35} height={30} />
                 </Link>
@@ -57,10 +64,10 @@ export default function Header(){
             
             <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center p-4 items-center w-full sm:hidden" : "hidden"}>
               
-                <Link href="/" className="no-underline text-black">Home</Link>
-                <Link href="/About" className="no-underline text-black">About Us</Link>
-                <Link href="/dashboard" className="no-underline text-black">Dashboard</Link>
-                <Link href="/Contact" className="no-underline text-black">Contact Us</Link>
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
+                <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
                     <Image src="/facebook.png" alt="facebook" width={35} height={30} />
                 </Link>
@@ -77,7 +84,17 @@ export default function Header(){
                 <>
              <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center items-center w-full sm:hidden" : "hidden"}>
                 
-             <div className='flex justify-end p-4'>
+             {/* <div className='flex justify-end p-4'> */}
+            < div className='flex flex-col gap-4 p-4 items-center'>
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
+                <Link href="https://www.facebook.com/kannadasanchaya">
+                    <Image src="/facebook.png" alt="facebook" width={35} height={30} />
+                </Link>
+                <Link href="https://twitter.com/kannadasanchaya">
+                    <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
+                </Link>
                     <button className={"bg-sky-800 text-white p-3 rounded-2xl "} >
                     <SignInButton  redirectUrl='/isPublisher'/>
                     </button>
@@ -87,11 +104,12 @@ export default function Header(){
                 <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between items-center w-full sm:w-auto ml-2`}>
                 <div>
                 <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                {/* <LanguageToggle onChange={handleLanguageChange} /> */}
                 </div>
                 <div className='flex flex-row gap-16 p-4 items-center'>
-                <Link href="/" className="no-underline text-black">Home</Link>
-                <Link href="/About" className="no-underline text-black">About Us</Link>
-                <Link href="/Contact" className="no-underline text-black">Contact Us</Link>
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
                     <Image src="/facebook.png" alt="facebook" width={35} height={30} />
                 </Link>
@@ -100,7 +118,7 @@ export default function Header(){
                 </Link>
                  
                     <button className={"bg-sky-800 text-white p-3 rounded-2xl "} >
-                    <SignInButton  redirectUrl='/isPublisher'/>
+                    <SignInButton  redirectUrl={`/isPublisher/${language}`}/>
                     </button>
                     </div>
                  </div>

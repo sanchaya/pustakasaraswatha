@@ -3,11 +3,11 @@
 import React from "react";
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-export default function About() {
-    
+export default function About(req,res) {
+    const language= req.params.lang;
     return(
         <>
-        <Header/>
+        <Header language={language} />
       
       
         <div className='flex flex-col justify-center items-center '>    

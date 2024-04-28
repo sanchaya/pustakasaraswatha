@@ -4,12 +4,12 @@ import React from "react";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from "next/link";
-export default function Contact() {
-    
+export default function Contact(req,res) {
+    const language=req.params.lang;
     return(
         <>
         <div className='mb-20 '>
-            <Header/>
+            <Header language={language}/>
         </div>
 
         <div className='flex justify-center items-center gap-4 mt-20'>
