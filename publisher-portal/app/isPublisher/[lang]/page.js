@@ -2,6 +2,8 @@
 
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { useUser,useClerk } from '@clerk/nextjs';
 import {useRouter} from 'next/navigation';
 import {
@@ -47,6 +49,9 @@ const handleRegister=()=>{
 
     return(
         <>
+          <div className='mb-20 '>
+            <Header language={language}/>
+        </div>
 <AlertDialog open={isOpen} onClose={() => setIsOpen(false)}>
   <AlertDialogTrigger/>
   <AlertDialogContent>
@@ -62,7 +67,7 @@ const handleRegister=()=>{
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
-
+<div className="fixed bottom-0 mt-8"><Footer/></div>
         </>
     )
 }

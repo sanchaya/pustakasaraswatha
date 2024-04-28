@@ -3,6 +3,8 @@ import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import { useUser,useClerk } from '@clerk/nextjs';
 import { useRouter } from "next/navigation";
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import Translation from '@/components/Translation';
 export default function RegisterForm(req,res){
   const { user } = useUser();
@@ -210,9 +212,11 @@ export default function RegisterForm(req,res){
     
     return (
         <>
-     
+      <div className='mb-20 '>
+            <Header language={language}/>
+        </div>
         <main className="flex flex-col items-center justify-between ">
-         
+       
           <div className="p-16">
             <div className=" p-4 rounded-lg shadow-custom ">
               {/* <form onSubmit={handleSubmit}>
@@ -355,7 +359,7 @@ export default function RegisterForm(req,res){
       <label className="text-sky-600">
       <Translation language={language} textKey="contact_no"/>:
       </label>
-      <input type="number" name="phone" placeholder='Enter phone number' value={formData.phone} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+      <input type="string" name="phone" placeholder='Enter phone number' value={formData.phone} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
@@ -386,8 +390,9 @@ export default function RegisterForm(req,res){
             </div>
           
           </div>
+         
         </main>
-
+        <div className="fixed bottom-0 mt-8"><Footer/></div>
         </>
       );
 }

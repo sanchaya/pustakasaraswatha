@@ -14,7 +14,7 @@ const publisherSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Logo', // Reference to the BookPhoto collection
     },
-    phone:Number,
+    phone:String,
 });
 
 
