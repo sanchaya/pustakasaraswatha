@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
             email
         } = req.body;
  
-       
+       console.log(req.body);
 
         // Create a new Book document with photo reference
         const book = new Book({
@@ -93,7 +93,7 @@ app.get('/', (req, res) => {
             publishedMonth,
             seriesChecked,
             subject,
-            email
+            email:email.emailAddress
         });
 
         // Save the book

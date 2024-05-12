@@ -54,7 +54,7 @@ interface Publisher {
      "https://pubserver.sanchaya.net/getAllPublishers"
     );
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.log('No publishers');
     }
    
     const fetchedData = await response.json();

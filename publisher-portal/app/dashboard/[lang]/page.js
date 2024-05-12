@@ -7,6 +7,7 @@ import {
 
   useGlobalFilter,
 } from "react-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {BiChevronDown, BiChevronUp} from "react-icons/bi";
 import { useUser } from "@clerk/nextjs";
 import Header from "@/components/Header";
@@ -19,14 +20,46 @@ const Dashboard = (req,res) => {
 
   const { user } = useUser();
   const language=req.params.lang ||'kn';
-
+  const [url,setUrl]=useState("");
   const [fullData, setFullData] = useState([]); // Store all the data
   const [visibleData, setVisibleData] = useState([]); // Data currently visible in the table
-
+  const [profileData, setProfileData]=useState([]);
   const [hasMore, setHasMore] = useState(true); // Whether more data is available
   const PAGE_SIZE = 20;
   const tableRef = useRef(null);
 
+  const fetchUserData = async () => {
+    try {
+      
+      const response = await fetch(
+        `http://localhost:3002/profile/${user.emailAddresses[0]}`
+      );
+      if (!response.ok) {
+        console.log('User not found');
+      }
+      const responseData = await response.json();
+      console.log(responseData);
+   
+     // Check if userProfile exists in responseData
+     if (responseData) {
+        const userProfileData = responseData.publisher;
+        const publisherLogoData = responseData.publisherWithLogo;
+        setProfileData(userProfileData);
+
+        setUrl(publisherLogoData.logo);
+        console.log(profileData);
+    }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
+  };
+  
+  useEffect(()=>{
+
+    if(user){
+        fetchUserData();
+    }
+},[user]);
 
 
 
@@ -100,7 +133,7 @@ const Dashboard = (req,res) => {
       console.log('called');
       console.log(user);
       const response = await fetch(
-        `https://pubserver.sanchaya.net/publishers/books/${user.emailAddresses[0]}`
+        `http://localhost:3002/publishers/books/${user.emailAddresses[0]}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -202,12 +235,27 @@ const Dashboard = (req,res) => {
         
           <Header language={language}/>
          <div className="flex justify-end p-8">
-          
-          <Link href={`/AddBook/${language}`}>
-          <button className="bg-sky-800 hover:bg-sky-600 text-white px-4 py-2 rounded-md">AddBook</button>
+            <Link href={`/AddBook/${language}`}>
+              <button className="bg-sky-800 hover:bg-sky-600 text-white px-4 py-2 rounded-md">AddBook</button>
             </Link>
+          </div>
+            <div className="flex justify-between p-8">
+            <div className="w-1/4">
+          <div className="flex flex-col gap-4">
+          
+          <Avatar style={{ width: "150px", height: "150px" }}>
+                <AvatarImage src={url} />
+                <AvatarFallback>Profile</AvatarFallback>
+            </Avatar>
+            <p>Name: {profileData.name}</p>
+            <p>WebAddress: {profileData.weburl}</p>
+            <p>HomeAddress: {profileData.address}</p>
+            <p>Contact: {profileData.phone}</p>
+            <p>Email: {profileData.email}</p>
             </div>
-          <div className="flex justify-center p-8">
+          </div>
+       
+        <div className="w-3/4 border-l border-gray-300 pt-8">
             <div ref={tableRef} className=" overflow-x-auto max-h-[65vh]">
               <table
                 {...getTableProps()}
@@ -256,6 +304,7 @@ const Dashboard = (req,res) => {
                 </tbody>
               </table>
 
+            </div>
             </div>
             <button
               onClick={scrollToTop}

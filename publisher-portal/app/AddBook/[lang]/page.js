@@ -94,7 +94,7 @@ export default function Form(req,res){
           if (isValid) {
           const photoId=  await createCover(selectedFile);
           const seriesValue = seriesChecked ? "Yes" : "No";
-        
+            if(user){
             const data = {
               series: seriesValue,
               bookTitle: formData.bookTitle,
@@ -112,9 +112,9 @@ export default function Form(req,res){
               email:user.emailAddresses[0]
             };
   
-         
+        
             const bookResponse = await fetch(
-              "https://pubserver.sanchaya.net/books/save-book-data",
+              "http://localhost:3002/books/save-book-data",
               {
                 method: "POST",
                 headers: {
@@ -146,6 +146,7 @@ export default function Form(req,res){
             } else {
               console.error("Failed to submit the form to the backend");
             }
+        }
           }
           else{
             console.error("Error validating the form");
