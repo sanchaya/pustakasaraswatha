@@ -46,7 +46,7 @@ interface Book {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
       }
-      const response = await fetch(`http://localhost:3002/books/search?query=${encodeURIComponent(query)}`);
+      const response = await fetch(`https://pubserver.sanchaya.net/books/search?query=${encodeURIComponent(query)}`);
       if (!response.ok) {
         throw new Error('Failed to search books');
       }

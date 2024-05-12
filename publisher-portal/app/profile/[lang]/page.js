@@ -76,7 +76,7 @@ const processFile = (file) => {
         try {
           
           const response = await fetch(
-            `http://localhost:3002/profile/${user.emailAddresses[0]}`
+            `https://pubserver.sanchaya.net/profile/${user.emailAddresses[0]}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -132,7 +132,7 @@ const processFile = (file) => {
     
             // Send the form data to the backend API
             const requestData = { ...values }; // Create a new object without circular references
-            await axios.put(`http://localhost:3002/publishers/update/${user.emailAddresses[0]}`, requestData);
+            await axios.put(`https://pubserver.sanchaya.net/publishers/update/${user.emailAddresses[0]}`, requestData);
     
             console.log('Form data sent successfully to the backend.');
         } catch (error) {

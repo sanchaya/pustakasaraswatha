@@ -51,7 +51,7 @@ interface Publisher {
   };
   const fetchData = async()=>{
     const response = await fetch(
-     "http://localhost:3002/getAllPublishers"
+     "https://pubserver.sanchaya.net/getAllPublishers"
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
