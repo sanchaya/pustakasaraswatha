@@ -73,6 +73,7 @@ app.get('/', (req, res) => {
             publishedMonth,
             seriesChecked,
             subject,
+            email
         } = req.body;
  
        
@@ -92,6 +93,7 @@ app.get('/', (req, res) => {
             publishedMonth,
             seriesChecked,
             subject,
+            email
         });
 
         // Save the book
@@ -174,54 +176,186 @@ app.post('/publishers/register',async(req,res)=>{
     res.status(500).json({ error: 'Internal Server Error' });
 }
 })
+app.put('/publishers/update/:email',async(req,res)=>{
+  try {
+    const userEmail = req.params.email;
+    console.log(userEmail);
+    const publisher = await Publisher.findOne({email:userEmail});
+    if(!publisher){
+      return res.status(404).json({message:"User not found"});
+    }
+    const {
+      name,
+      email,
+      weburl,
+      address,
+      phone,
+      logo
+    
+  } = req.body;
+  const logoData = await Logo.create({logo});
+    logoData.save();
+    const updatedProfile = await Publisher.findByIdAndUpdate(publisher._id,{
+      name,
+      email,
+      weburl,
+      address,
+      phone,
+      logo:logoData._id
+    },
+  {new:true}
+)
+
+    res.status(201).json({ updatedProfile});
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+})
+app.get('/profile/:email', async(req,res)=>{
+  try{
+    const email = req.params.email;
+    const publisher = await Publisher.findOne({email:email});
+    if(!publisher){
+      return res.status(404).json({message:"User not found"});
+    }
+    
+    const publisherWithLogo = await Logo.findById(publisher.logo);
+    return res.status(200).json({publisher,publisherWithLogo});
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching user profile' });
+  }
+})
+app.get('/publishers/books/:email',async(req,res)=>{
+  try{
+    const email=req.params.email;
+    const books = await Book.find({email:email});
+    if(!books){
+      return res.status(404).json({message:"Books not found"});
+    }
+    return res.status(200).json({books});
+  }
+  catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching books' });
+  }
+})
+app.get('/getAllPublishers', async(req,res)=>{
+  try{
+    const publishers = await Publisher.find();
+    if(!publishers){
+      return res.status(404).json({message:'No publisher found'});
+    }
+    const publishersWithLogo = await Promise.all(publishers.map(async (publisher) => {
+       
+      const logo = await Logo.findById(publisher.logo);
+      const logoData = logo ? logo: null;
+
+ 
+      return {
+        ...publisher.toObject(),
+        logo: logoData,
+      };
+    }));
+    return res.status(200).json({publishersWithLogo});
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching publishers profile' });
+  }
+})
+
+// app.get('/books/search', async (req, res) => {
+//   try {
+//     const { query, criteria } = req.query;
+   
+//     let searchQuery = {};
+//     if (criteria === 'bookTitle') {
+//       searchQuery = { bookTitle: { $regex: new RegExp(query, 'i') } }; 
+//     } else if (criteria === 'authorName') {
+//       searchQuery = { authorName: { $regex: new RegExp(query, 'i') } };
+//     } else if (criteria === 'publisherName') {
+//       searchQuery = { publisherName: { $regex: new RegExp(query, 'i') } };
+//     } else if (criteria === 'publishedYear') {
+//       // Check if the query is a valid year
+//       const year = parseInt(query);
+//       if (!isNaN(year)) {
+//         searchQuery = { publishedYear: year };
+//       } else {
+//         return res.status(400).json({ error: 'Invalid published year' });
+//       }
+//     } 
+//     else if(criteria === 'isbn'){
+//         searchQuery = {isbn:{$regex: new RegExp(query,'i')}};
+//     }
+//     else {
+//       return res.status(400).json({ error: 'Invalid search criteria' });
+//     }
+
+//     const searchResults = await Book.find(searchQuery);
+  
+//     if(searchResults.length>0){
+  
+//     const booksWithPhoto = await Promise.all(searchResults.map(async (book) => {
+  
+//       const book_photo = await BookPhoto.findById(book.bookCover);
+//       const photoData = book_photo ? book_photo: null;
+
+//       return {
+//         ...book.toObject(),
+//         book_photo: photoData,
+//       };
+//     }));
+ 
+//     res.json(booksWithPhoto);
+//   }
+//   else{
+//     res.json([]);
+//   }
+//   } catch (error) {
+//     console.error('Error searching books:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 app.get('/books/search', async (req, res) => {
   try {
-    const { query, criteria } = req.query;
-   
-    let searchQuery = {};
-    if (criteria === 'bookTitle') {
-      searchQuery = { bookTitle: { $regex: new RegExp(query, 'i') } }; 
-    } else if (criteria === 'authorName') {
-      searchQuery = { authorName: { $regex: new RegExp(query, 'i') } };
-    } else if (criteria === 'publisherName') {
-      searchQuery = { publisherName: { $regex: new RegExp(query, 'i') } };
-    } else if (criteria === 'publishedYear') {
-      // Check if the query is a valid year
-      const year = parseInt(query);
-      if (!isNaN(year)) {
-        searchQuery = { publishedYear: year };
-      } else {
-        return res.status(400).json({ error: 'Invalid published year' });
-      }
-    } 
-    else if(criteria === 'isbn'){
-        searchQuery = {isbn:{$regex: new RegExp(query,'i')}};
-    }
-    else {
-      return res.status(400).json({ error: 'Invalid search criteria' });
-    }
-
+    const { query } = req.query;
+    console.log(req.query);
+    // Search across multiple fields using regex
+    const searchQuery = {
+      $or: [
+        { bookTitle: { $regex: new RegExp(query, 'i') } },
+        { authorName: { $regex: new RegExp(query, 'i') } },
+        { publisherName: { $regex: new RegExp(query, 'i') } },
+        { isbn: { $regex: new RegExp(query, 'i') } },
+      
+      ],
+    };
+       // Check if the query can be parsed as a number for publishedYear
+       const year = parseInt(query);
+       if (!isNaN(year)) {
+         searchQuery.$or.push({ publishedYear: year });
+       }
     const searchResults = await Book.find(searchQuery);
-  
-    if(searchResults.length>0){
-  
-    const booksWithPhoto = await Promise.all(searchResults.map(async (book) => {
-  
-      const book_photo = await BookPhoto.findById(book.bookCover);
-      const photoData = book_photo ? book_photo: null;
 
-      return {
-        ...book.toObject(),
-        book_photo: photoData,
-      };
-    }));
- 
-    res.json(booksWithPhoto);
-  }
-  else{
-    res.json([]);
-  }
+    if (searchResults.length > 0) {
+      const booksWithPhoto = await Promise.all(
+        searchResults.map(async (book) => {
+          const book_photo = await BookPhoto.findById(book.bookCover);
+          const photoData = book_photo ? book_photo : null;
+
+          return {
+            ...book.toObject(),
+            book_photo: photoData,
+          };
+        })
+      );
+
+      res.json(booksWithPhoto);
+    } else {
+      res.json([]);
+    }
   } catch (error) {
     console.error('Error searching books:', error);
     res.status(500).json({ error: 'Internal Server Error' });

@@ -34,7 +34,7 @@ export default function IsPublisher(req,res){
   
 const handleLogout = async()=>{
   await signOut();
-  router.push(`/${language}`);
+  router.push(`/dashboard/${language}`);
 }
 
 const handleRegister=()=>{
@@ -58,7 +58,7 @@ const handleRegister=()=>{
     <AlertDialogHeader>
       <AlertDialogTitle>Are you a Publisher?</AlertDialogTitle>
       <AlertDialogDescription>
-        Only Publishers can SignIn!!!
+     
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>

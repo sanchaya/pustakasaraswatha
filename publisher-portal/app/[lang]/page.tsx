@@ -1,11 +1,11 @@
 "use client"
 import Image from "next/image";
 import Header from '@/components/Header';
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect, useRef } from 'react';
 import SearchBar from '@/components/searchBar';
 import Footer from '@/components/Footer';
 import Translation from '@/components/Translation';
-import LanguageToggle from '../../components/LanguageToggle';
+import FilterOptions from '@/components/filters';
 
 interface Book {
   pageCount: React.JSX.Element;
@@ -27,20 +27,26 @@ interface Book {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+  const [filterCriteria, setFilterCriteria] = useState('');
+  const [filterOption, setFilterOption] = useState('');
+  const [hasMore, setHasMore] = useState(true); // Whether more data is available
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
   // const [language, setLanguage] = useState('en');
-  const language = req.params.lang ||'kn';
-
+  const language = req.params.lang||'kn';
+  const limit = 12; 
+  const observer = useRef();
   // const handleLanguageChange = (selectedLanguage: React.SetStateAction<string>) => {
   //   setLanguage(selectedLanguage);
   // };
-  const handleSearch = async (query: string|number , criteria: any) => {
+  const handleSearch = async (query: string|number) => {
     try {
       setSearchQuery(String(query));
       if (!query) {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
       }
-      const response = await fetch(`https://pubserver.sanchaya.net/books/search?query=${encodeURIComponent(query)}&criteria=${criteria}`);
+      const response = await fetch(`http://localhost:3002/books/search?query=${encodeURIComponent(query)}`);
       if (!response.ok) {
         throw new Error('Failed to search books');
       }
@@ -59,7 +65,7 @@ interface Book {
     }
    
     const fetchedData = await response.json();
-
+    fetchedData.sort((a: { publishedYear: number; }, b: { publishedYear: number; }) => b.publishedYear - a.publishedYear);
    setBookData(fetchedData);
    
   }
@@ -76,15 +82,54 @@ interface Book {
     }
   }, [searchResults, bookData, searchQuery]);
   
-
+  // useEffect(() => {
+  //   const sortedBooks = [...filteredBooks].sort((a, b) => b.publishedYear - a.publishedYear);
+  //   setFilteredBooks(sortedBooks);
+  // }, [filteredBooks]);
+  const handleFilter = (option: React.SetStateAction<string>) => {
+    setFilterOption(option);
+  };
+  useEffect(() => {
+    let sortedBooks = [...bookData];
+    if (filterOption === 'recentlyUploaded') {
+      sortedBooks.sort((a: { uploadedAt: Date; }, b: { uploadedAt: Date; }) => {
+        const dateA = new Date(a.uploadedAt);
+        const dateB = new Date(b.uploadedAt);
+        return dateB.getTime() - dateA.getTime();
+      });
+    } else if (filterOption === 'year') {
+      // Sort by year
+      sortedBooks.sort((a: { publishedYear: number; }, b: { publishedYear: number; }) => b.publishedYear - a.publishedYear);
+    } else if (filterOption === 'publisherName'){
+      sortedBooks.sort((a: { publisherName?: string }, b: { publisherName?: string }) => {
+        // Check if publisherName exists and is not undefined for both objects
+        if (a.publisherName && b.publisherName) {
+          return a.publisherName.localeCompare(b.publisherName);
+        } else if (a.publisherName) {
+          return 1; // Move objects with publisherName to the end
+        } else if (b.publisherName) {
+          return -1; // Move objects with publisherName to the beginning
+        } else {
+          return 0; // If both are undefined, maintain current order
+        }
+      });
+    } else if (filterOption === 'bookTitle'){
+      // Sort by book title
+      sortedBooks.sort((a: {bookTitle: string; }, b: { bookTitle: string; }) => a.bookTitle.localeCompare(b.bookTitle));
+    }
+    setFilteredBooks(sortedBooks);
+  }, [bookData, filterOption]);
+  
   return (
   <>
    <Header language={language}/>
  
-   <div className="mx-auto flex justify-center p-4 mb-4 mt-4">
+   <div className="p-8">
+   
     <SearchBar onSearch={handleSearch} language={language} />
    </div>
    <hr className="w-full border-t border-black opacity-20 mb-4" />
+   <FilterOptions onFilter={handleFilter} />
   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-5">
 
   {filteredBooks.length > 0 ? (

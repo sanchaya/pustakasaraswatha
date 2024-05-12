@@ -4,16 +4,17 @@ import React, { useState } from 'react';
 import Translation from '../components/Translation';
 const SearchBar = ({ onSearch ,language}) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCriteria, setSelectedCriteria] = useState('bookTitle');
 
+ 
 
   const handleSearch = () => {
-    onSearch(searchQuery, selectedCriteria);
+    onSearch(searchQuery);
   };
 
   return (
-    <div className='flex flex-row gap-1'>
-        <select
+    <div className='w-full'>
+    <div className='flex justify-center'>
+        {/* <select
         value={selectedCriteria}
         onChange={(e) => setSelectedCriteria(e.target.value)}
       >
@@ -22,20 +23,22 @@ const SearchBar = ({ onSearch ,language}) => {
         <option value="publisherName"><Translation language={language} textKey="publisher" /></option>
         <option value="publishedYear"><Translation language={language} textKey="year" /></option>
         <option value="isbn">ISBN</option>
-      </select>
+      </select> */}
       <input
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder={language=='en'?'Enter Search Query':'ಹುಡುಕು ಪದ ಟೈಪಿಸಿ'}
+        placeholder={language=='en'?' Title | Author | Publisher | Year | ISBN':' ಪುಸ್ತಕದ ಹೆಸರು | ಲೇಖಕರ ಹೆಸರು | ಪ್ರಕಾಶಕರ ಹೆಸರು | ವರ್ಷ | ISBN'}
         onKeyDown={(e) => {
             if (e.key === 'Enter') {
                 handleSearch(); // Call the search function
             }
         }}
+        className='w-1/2 p-2 text-center'
       />
       
     
+    </div>
     </div>
   );
 };

@@ -10,6 +10,7 @@
   "author": "padmapriya",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.12.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -18,5 +19,8 @@
     "mongoose": "^8.2.4",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.12.1"
   }
 }

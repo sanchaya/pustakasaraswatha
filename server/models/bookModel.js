@@ -16,7 +16,7 @@ const bookSchema = new mongoose.Schema({
     publishedMonth:Number,
     isbn:String,
     price:Number,
-    userId:String,
+    email:String,
     publisherName:String,
     bookCover: {
     type: mongoose.Schema.Types.ObjectId,
@@ -26,6 +26,7 @@ const bookSchema = new mongoose.Schema({
     subject:String,
     seriesChecked:String,
     seriesName:String,
+    uploadedAt:{type:Date, default:Date.now}
 });
 
 

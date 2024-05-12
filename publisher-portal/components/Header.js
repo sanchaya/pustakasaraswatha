@@ -22,7 +22,9 @@ export default function Header({language}){
        
         <div className='flex justify-end items-center mr-5'>
             {/* Mobile Menu */}
-            <Image className="block lg:hidden mr-auto ml-5 mt-1 p-4" src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+            <Link href={`/${language}`} className="block lg:hidden mr-auto ml-5 mt-1 p-4 no-underline text-black">
+            <Image  src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+            </Link>
             <button onClick={() => setShowMenu(!showMenu)} className="block sm:hidden focus:outline-none">
            
                 <svg className="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,12 +43,15 @@ export default function Header({language}){
             {user ? (
                 <>
                  <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between w-full sm:w-auto ml-2`}>
-                    <div className='flex flex-row p-4 gap-4'>
+                    <div className='flex flex-row p-2 ml-4'>
+                    <Link href={`/${language}`} className="no-underline text-black">
                     <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                    </Link>
                     {/* <LanguageToggle onChange={handleLanguageChange} /> */}
                     </div>
-                    <div className='flex flex-row gap-16 p-4'>
+                    <div className='flex flex-row gap-4 p-2'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
                 <Link href={`/Contact/${language}`} className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
@@ -56,15 +61,17 @@ export default function Header({language}){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                <UserButton afterSignOutUrl="/" />
+                <div className='mr-4'><UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`}  afterSignOutUrl="/" /> </div>
+                
                 </div>
             </div>
                     
                 {/* Mobile Menu Links */}
             
-            <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center p-4 items-center w-full sm:hidden" : "hidden"}>
+            <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center p-2 items-center w-full sm:hidden" : "hidden"}>
               
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
@@ -74,7 +81,7 @@ export default function Header({language}){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                <UserButton afterSignOutUrl="/" />
+                <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`}  afterSignOutUrl="/" />
                
             </nav>
                 
@@ -85,8 +92,9 @@ export default function Header({language}){
              <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center items-center w-full sm:hidden" : "hidden"}>
                 
              {/* <div className='flex justify-end p-4'> */}
-            < div className='flex flex-col gap-4 p-4 items-center'>
+            < div className='flex flex-col gap-4 p-2 items-center'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
@@ -95,19 +103,22 @@ export default function Header({language}){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                    <button className={"bg-sky-800 text-white p-3 rounded-2xl "} >
+                    <button  >
                     <SignInButton  redirectUrl='/isPublisher'/>
                     </button>
                     </div>
               
             </nav>
-                <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between items-center w-full sm:w-auto ml-2`}>
-                <div>
-                <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                <div className={`hidden sm:flex flex-row gap-4 shadow-lg py-2 justify-between items-center w-full sm:w-auto ml-2`}>
+                <div className='ml-4'>
+                <Link href={`/${language}`} className="no-underline text-black">
+                    <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                </Link>
                 {/* <LanguageToggle onChange={handleLanguageChange} /> */}
                 </div>
-                <div className='flex flex-row gap-16 p-4 items-center'>
+                <div className='flex flex-row gap-4 p-2 items-center'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
@@ -116,10 +127,11 @@ export default function Header({language}){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                 
-                    <button className={"bg-sky-800 text-white p-3 rounded-2xl "} >
+                    <div className='mr-4'>
+                    <button  >
                     <SignInButton  redirectUrl={`/isPublisher/${language}`}/>
                     </button>
+                    </div>
                     </div>
                  </div>
                 </>

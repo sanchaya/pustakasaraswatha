@@ -66,7 +66,7 @@ export default function RegisterForm(req,res){
               const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
               if (response.data.message !== "User does not exist") {
              
-                window.location.href = `/${language}`;
+                window.location.href = `/dashboard/${language}`;
               }
             } catch (error) {
               console.error("Error checking user registration:", error);
@@ -164,7 +164,7 @@ export default function RegisterForm(req,res){
               setFileName("");
               setSelectedFile(null);
               alert("Submitted Successfully");
-              window.location.href = `/${language}`;
+              window.location.href = `/dashboard/${language}`;
             } else {
               console.error("Failed to submit the form to the backend");
             }
@@ -219,121 +219,7 @@ export default function RegisterForm(req,res){
        
           <div className="p-16">
             <div className=" p-4 rounded-lg shadow-custom ">
-              {/* <form onSubmit={handleSubmit}>
-                <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center col-span-2">
-                  Register
-                </h1>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 3fr",
-                    gap: "5px",
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "#0369a1",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "45px",
-                    }}
-                  >
-                    
-                    <label>
-                      Publisher Name:
-                    </label>
-                    <label>Address:</label>
-                    <label>
-                      Email:
-                    </label>
-                    <label>Phone:</label>
-                    <label>Website Address:</label>
-                    
-                    <label>Logo:</label>
-                  
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "25px",
-                    }}
-                  >
-                    
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                    />
-                    <input
-                      type="string"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                    />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                      disabled={formData.email !== ""}
-                    />
-                  
-                    <input
-                      type="number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                    />
-                   
-                   
-                    <input
-                      type="string"
-                      name="weburl"
-                      value={formData.weburl}
-                      onChange={handleInputChange}
-                      required
-                      style={{ padding: "10px", backgroundColor: "#dcdcdc" }}
-                    />
-                      
-                    <div className='relative'>
-                      <input
-                      type="file"
-                      accept="image/*"
-                      name="logo"
-                      className="hidden"
-                      id="fileInput"
-                      value={formData.logo}
-                      onChange={handleFileChange}
-                    
-                    />
-                    <label htmlFor="fileInput"
-                    className="appearance-none border border-gray-300 py-2 px-5 rounded-md w-full cursor-pointer"
-                     >
-                    {fileName ? ` ${fileName}` : "Upload File"}
-                    </label>
-                    
-                    {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-                    </div>
-                   
-                    
-                  </div>
-                </div>
-                <div className="mt-4 ml-auto w-40">
-                  <button className="button" type="submit">
-                    Submit
-                  </button>
-                </div>
-              </form> */}
+            
               <form onSubmit={handleSubmit} className="max-w-full px-4">
   <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center">Register</h1>
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

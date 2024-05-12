@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("ATLAS_STRING")
+}
+
+model bookphotos {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int    @map("__v")
+  bookCover String
+}
+
+model books {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  v              Int    @map("__v")
+  authorName     String
+  bookCover      String @db.ObjectId
+  bookTitle      String
+  edition        String
+  isbn           String
+  pageCount      Int
+  price          Int
+  publishedMonth Int
+  publishedYear  Int
+  seriesName     String
+  subject        String
+  volume         String
+}
+
+model logos {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model publishers {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
