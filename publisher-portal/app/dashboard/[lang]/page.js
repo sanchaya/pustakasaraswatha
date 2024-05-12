@@ -32,7 +32,7 @@ const Dashboard = (req,res) => {
     try {
       
       const response = await fetch(
-        `http://localhost:3002/profile/${user.emailAddresses[0]}`
+        `https://pubserver.sanchaya.net/profile/${user.emailAddresses[0]}`
       );
       if (!response.ok) {
         console.log('User not found');
@@ -133,7 +133,7 @@ const Dashboard = (req,res) => {
       console.log('called');
       console.log(user);
       const response = await fetch(
-        `http://localhost:3002/publishers/books/${user.emailAddresses[0]}`
+        `https://pubserver.sanchaya.net/publishers/books/${user.emailAddresses[0]}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
