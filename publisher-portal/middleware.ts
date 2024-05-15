@@ -1,8 +1,8 @@
 import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
-    publicRoutes:['/','/en','/kn','/About/kn','/Contact/kn','/About/en','/Contact/en'],
-    ignoredRoutes: ["/facebook.png", "/twitter.webp", "/sanchaya.jpg"]
+    publicRoutes:['/','/en','/kn','/About/kn','/Contact/kn','/About/en','/Contact/en','/Publishers/en','/Publishers/kn'],
+    ignoredRoutes: ["/favicon.ico","/facebook.png", "/twitter.webp", "/sanchaya.jpg"]
 });
 
 export const config = {

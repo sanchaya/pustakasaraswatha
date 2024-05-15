@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from 'react';
-import Translation from '../components/Translation';
 const SearchBar = ({ onSearch ,language}) => {
   const [searchQuery, setSearchQuery] = useState('');
 

@@ -27,7 +27,7 @@ interface Book {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
-  const [filterCriteria, setFilterCriteria] = useState('');
+  // const [filterCriteria, setFilterCriteria] = useState('');
   const [filterOption, setFilterOption] = useState('');
   const [hasMore, setHasMore] = useState(true); // Whether more data is available
   const [page, setPage] = useState(1);

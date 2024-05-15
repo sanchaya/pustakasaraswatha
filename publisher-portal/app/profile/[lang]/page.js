@@ -5,7 +5,6 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Translation from '@/components/Translation';
 import {
     Form,
     FormControl, 

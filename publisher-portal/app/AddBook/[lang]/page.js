@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import axios from 'axios';
 import Translation from '@/components/Translation';
 import { useUser } from "@clerk/nextjs";
+
 export default function Form(req,res){
     const [seriesChecked, setSeriesChecked]=useState(false);
     const [errorMessage, setErrorMessage] = useState('');

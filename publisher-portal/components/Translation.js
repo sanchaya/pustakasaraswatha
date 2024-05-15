@@ -1,4 +1,4 @@
-
+"use client"
 import en from './translation/en.json';
 import kn from './translation/kn.json';
 

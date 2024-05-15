@@ -5,7 +5,7 @@ import React,{useState, useEffect} from 'react';
 import SearchBar from '@/components/searchBar';
 import Footer from '@/components/Footer';
 import Translation from '@/components/Translation';
-import LanguageToggle from '@/components/LanguageToggle';
+
 
 interface Publisher {
   name:string;

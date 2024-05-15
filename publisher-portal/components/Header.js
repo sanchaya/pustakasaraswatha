@@ -1,3 +1,4 @@
+"use client"
 import React, {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -6,8 +7,8 @@ import {
     useUser,
     SignInButton,
   } from "@clerk/nextjs";
-import Translation from '../components/Translation';
-import LanguageToggle from '../components/LanguageToggle';
+import Translation from '@/components/Translation';
+
 
 export default function Header({language}){
     const [showMenu, setShowMenu] = useState(false);
@@ -47,7 +48,7 @@ export default function Header({language}){
                     <Link href={`/${language}`} className="no-underline text-black">
                     <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
                     </Link>
-                    {/* <LanguageToggle onChange={handleLanguageChange} /> */}
+           
                     </div>
                     <div className='flex flex-row gap-4 p-2'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
@@ -114,7 +115,7 @@ export default function Header({language}){
                 <Link href={`/${language}`} className="no-underline text-black">
                     <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
                 </Link>
-                {/* <LanguageToggle onChange={handleLanguageChange} /> */}
+         
                 </div>
                 <div className='flex flex-row gap-4 p-2 items-center'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>

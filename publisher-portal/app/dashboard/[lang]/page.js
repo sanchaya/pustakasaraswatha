@@ -1,5 +1,4 @@
 "use client"
-"use client";
 import React, {useState, useEffect, useMemo, useRef} from "react";
 import {
   useTable,
@@ -11,9 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {BiChevronDown, BiChevronUp} from "react-icons/bi";
 import { useUser } from "@clerk/nextjs";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Link from "next/link";
-import Image from "next/image";
+
 
 
 const Dashboard = (req,res) => {
