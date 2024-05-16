@@ -27,7 +27,7 @@ const SearchBar = ({ onSearch ,language}) => {
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder={language=='en'?' Title | Author | Publisher | Year | ISBN':' ಪುಸ್ತಕದ ಹೆಸರು | ಲೇಖಕರ ಹೆಸರು | ಪ್ರಕಾಶಕರ ಹೆಸರು | ವರ್ಷ | ISBN'}
+        placeholder={language=='en'?' Title | Author | Publisher | Year | ISBN':'ಹುಡುಕು: ಪುಸ್ತಕದ ಹೆಸರು | ಲೇಖಕರ ಹೆಸರು | ಪ್ರಕಾಶಕರ ಹೆಸರು | ವರ್ಷ | ISBN'}
         onKeyDown={(e) => {
             if (e.key === 'Enter') {
                 handleSearch(); // Call the search function

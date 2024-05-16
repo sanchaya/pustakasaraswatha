@@ -52,7 +52,7 @@ export default function Header({language}){
                     </div>
                     <div className='flex flex-row gap-4 p-2'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
-                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
                 <Link href={`/Contact/${language}`} className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
@@ -72,7 +72,7 @@ export default function Header({language}){
             <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center p-2 items-center w-full sm:hidden" : "hidden"}>
               
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
-                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
@@ -95,7 +95,7 @@ export default function Header({language}){
              {/* <div className='flex justify-end p-4'> */}
             < div className='flex flex-col gap-4 p-2 items-center'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
-                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
@@ -119,7 +119,7 @@ export default function Header({language}){
                 </div>
                 <div className='flex flex-row gap-4 p-2 items-center'>
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
-                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publisher" /></Link>
+                <Link href={`/Publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
                 <Link href={`/About/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/Contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">

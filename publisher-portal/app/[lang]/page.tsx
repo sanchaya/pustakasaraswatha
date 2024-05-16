@@ -129,7 +129,9 @@ interface Book {
     <SearchBar onSearch={handleSearch} language={language} />
    </div>
    <hr className="w-full border-t border-black opacity-20 mb-4" />
+   <div className="flex justify-center">
    <FilterOptions onFilter={handleFilter} />
+   </div>
   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-5">
 
   {filteredBooks.length > 0 ? (
