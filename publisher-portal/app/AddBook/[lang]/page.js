@@ -5,13 +5,14 @@ import Footer from '@/components/Footer';
 import axios from 'axios';
 import Translation from '@/components/Translation';
 import { useUser } from "@clerk/nextjs";
-
+import { useLanguage } from '@/contexts/LanguageContext';
 export default function Form(req,res){
+  const userRole = localStorage.getItem('userRole');
     const [seriesChecked, setSeriesChecked]=useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({bookCover:""});
     const [fileName, setFileName]=useState("");
-    const language=req.params.lang ||'kn';
+    const { language } = useLanguage();
     const { user } = useUser();
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
@@ -241,7 +242,7 @@ export default function Form(req,res){
     
     return (
         <>
-         <Header language={language}/>
+         <Header />
         <main className="flex flex-col items-center justify-between ">
          
           <div className="p-4">
@@ -262,12 +263,28 @@ export default function Form(req,res){
       </label>
       <input type="number" name="pageCount" placeholder='Enter Total Pages' value={formData.pageCount} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
     </div>
-    <div className="flex flex-col">
+    {/* <div className="flex flex-col">
       <label className="text-sky-600">
       <Translation language={language} textKey="author" /><span className="text-red-600">*</span>:
       </label>
       <input type="text" name="authorName" placeholder='Enter Author Name' value={formData.authorName} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
-    </div>
+    </div> */}
+       {userRole === 'publisher' && (
+                  <div className="flex flex-col">
+                    <label className="text-sky-600">
+                      Author Name:<span className="text-red-600">*</span>:
+                    </label>
+                    <input type="text" name="authorName" placeholder='Enter Author Name' value={formData.authorName} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
+                  </div>
+                )}
+                {userRole === 'author' && (
+                  <div className="flex flex-col">
+                    <label className="text-sky-600">
+                      Publisher Name:<span className="text-red-600">*</span>:
+                    </label>
+                    <input type="text" name="authorName" placeholder='Enter Publisher Name' value={formData.authorName} onChange={handleInputChange} required className="px-4 py-2  rounded-md" />
+                  </div>
+                )}
     <div className="flex flex-col">
       <label className="text-sky-600">
       <Translation language={language} textKey="year" /><span className="text-red-600">*</span>:

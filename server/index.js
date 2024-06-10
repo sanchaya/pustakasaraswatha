@@ -7,7 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { Book, BookPhoto } = require('./models/bookModel');
-const {Logo, Publisher } = require('./models/publisherModel');
+const {Logo, User } = require('./models/userModel');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const {savePhoto, saveLogo} = require('./savePhoto');
@@ -26,11 +26,11 @@ app.get('/', (req, res) => {
     res.send('App is running on port 3002..');
   });
 
-  app.get('/publishers/check/:email',async(req,res)=>{
+  app.get('/users/check/:email',async(req,res)=>{
     try{
       const email = req.params.email;
       // console.log(email);
-      const user = await Publisher.findOne({email});
+      const user = await User.findOne({email});
       // console.log(user);
       if(user===null){
         return res.status(401).json({"message":"User does not exists"});
@@ -108,8 +108,13 @@ app.get('/', (req, res) => {
 
 app.get('/books/details', async (req, res) => {
     try {
-  
-      const books = await Book.find();
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 20;
+      const totalCount = await Book.countDocuments();
+      const totalPages = Math.ceil(totalCount / pageSize);
+      const skip = (page - 1) * pageSize; 
+      const books = await Book.find().skip(skip)
+      .limit(pageSize);
   
  
       const booksWithPhoto = await Promise.all(books.map(async (book) => {
@@ -121,18 +126,23 @@ app.get('/books/details', async (req, res) => {
         return {
           ...book.toObject(),
           book_photo: photoData,
+          
         };
       }));
  
  
-      res.status(200).json(booksWithPhoto);
+      res.status(200).json({booksWithPhoto,
+        currentPage: page,
+          totalPages,
+          totalCount
+      });
     } catch (error) {
       console.error('Error fetching book details:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
-app.post('/publishers/logo',async(req,res)=>{
+app.post('/users/logo',async(req,res)=>{
   try {
 
     const body = req.body;
@@ -145,7 +155,7 @@ app.post('/publishers/logo',async(req,res)=>{
   }
 })
   
-app.post('/publishers/register',async(req,res)=>{
+app.post('/users/register',async(req,res)=>{
   try {
     const {
         name,
@@ -153,18 +163,20 @@ app.post('/publishers/register',async(req,res)=>{
         weburl,
         address,
         phone,
-        logo
+        logo,
+        role
       
     } = req.body;
 
   
-    const user = new Publisher({
+    const user = new User({
       name,
       email,
       weburl,
       address,
       phone,
-      logo
+      logo,
+      role
        
     });
 
@@ -176,12 +188,12 @@ app.post('/publishers/register',async(req,res)=>{
     res.status(500).json({ error: 'Internal Server Error' });
 }
 })
-app.put('/publishers/update/:email',async(req,res)=>{
+app.put('/users/update/:email',async(req,res)=>{
   try {
     const userEmail = req.params.email;
     console.log(userEmail);
-    const publisher = await Publisher.findOne({email:userEmail});
-    if(!publisher){
+    const user = await User.findOne({email:userEmail});
+    if(!user){
       return res.status(404).json({message:"User not found"});
     }
     const {
@@ -190,18 +202,20 @@ app.put('/publishers/update/:email',async(req,res)=>{
       weburl,
       address,
       phone,
-      logo
+      logo,
+      role
     
   } = req.body;
   const logoData = await Logo.create({logo});
     logoData.save();
-    const updatedProfile = await Publisher.findByIdAndUpdate(publisher._id,{
+    const updatedProfile = await User.findByIdAndUpdate(user._id,{
       name,
       email,
       weburl,
       address,
       phone,
-      logo:logoData._id
+      logo:logoData._id,
+      role
     },
   {new:true}
 )
@@ -215,19 +229,19 @@ app.put('/publishers/update/:email',async(req,res)=>{
 app.get('/profile/:email', async(req,res)=>{
   try{
     const email = req.params.email;
-    const publisher = await Publisher.findOne({email:email});
-    if(!publisher){
+    const user = await User.findOne({email:email});
+    if(!user){
       return res.status(404).json({message:"User not found"});
     }
     
-    const publisherWithLogo = await Logo.findById(publisher.logo);
-    return res.status(200).json({publisher,publisherWithLogo});
+    const userWithLogo = await Logo.findById(user.logo);
+    return res.status(200).json({user,userWithLogo});
   }catch(error){
     console.error(error);
     res.status(500).json({ error: 'Error fetching user profile' });
   }
 })
-app.get('/publishers/books/:email',async(req,res)=>{
+app.get('/users/books/:email',async(req,res)=>{
   try{
     const email=req.params.email;
     const books = await Book.find({email:email});
@@ -243,10 +257,11 @@ app.get('/publishers/books/:email',async(req,res)=>{
 })
 app.get('/getAllPublishers', async(req,res)=>{
   try{
-    const publishers = await Publisher.find();
+    const publishers = await User.find({ role: 'publisher' });
     if(!publishers){
       return res.status(404).json({message:'No publisher found'});
     }
+    
     const publishersWithLogo = await Promise.all(publishers.map(async (publisher) => {
        
       const logo = await Logo.findById(publisher.logo);
@@ -262,6 +277,30 @@ app.get('/getAllPublishers', async(req,res)=>{
   }catch(error){
     console.error(error);
     res.status(500).json({ error: 'Error fetching publishers profile' });
+  }
+})
+
+app.get('/getAllAuthors', async(req,res)=>{
+  try{
+    const authors = await User.find({ role: 'author' });
+    if(!authors){
+      return res.status(404).json({message:'No publisher found'});
+    }
+    const authorsWithLogo = await Promise.all(authors.map(async (author) => {
+       
+      const logo = await Logo.findById(author.logo);
+      const logoData = logo ? logo: null;
+
+ 
+      return {
+        ...author.toObject(),
+        logo: logoData,
+      };
+    }));
+    return res.status(200).json({authorsWithLogo});
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching authors profile' });
   }
 })
 
@@ -362,6 +401,59 @@ app.get('/books/search', async (req, res) => {
   }
 });
 
+app.get('/authors/search', async (req, res) => {
+  try {
+    const { query } = req.query;
+    console.log(req.query);
+    // Search across multiple fields using regex
+    const searchQuery = {
+      $or: [
+        { name: { $regex: new RegExp(query, 'i') } },
+        { address: { $regex: new RegExp(query, 'i') } },
+        { weburl: { $regex: new RegExp(query, 'i') } },
+        { phone: { $regex: new RegExp(query, 'i') } },
+        { email: { $regex: new RegExp(query, 'i') } }
+      ],
+    };
+    const searchResults = await User.find({ role: 'author', ...searchQuery });
+
+    if (searchResults.length > 0) {
+      res.json(searchResults);
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    console.error('Error searching authors:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/publishers/search', async (req, res) => {
+  try {
+    const { query } = req.query;
+    console.log(req.query);
+    // Search across multiple fields using regex
+    const searchQuery = {
+      $or: [
+        { name: { $regex: new RegExp(query, 'i') } },
+        { address: { $regex: new RegExp(query, 'i') } },
+        { weburl: { $regex: new RegExp(query, 'i') } },
+        { phone: { $regex: new RegExp(query, 'i') } },
+        { email: { $regex: new RegExp(query, 'i') } }
+      ],
+    };
+    const searchResults = await User.find({ role: 'publisher', ...searchQuery });
+
+    if (searchResults.length > 0) {
+      res.json(searchResults);
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    console.error('Error searching publishers:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.listen(PORT,()=>{
     console.log(`server is running at ${PORT}`);

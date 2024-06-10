@@ -5,7 +5,7 @@ const logoSchema = new mongoose.Schema({
   
   });
 
-const publisherSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     userId:String,
     name:String,
     email:{type:String,unique:true},
@@ -16,10 +16,11 @@ const publisherSchema = new mongoose.Schema({
       ref: 'Logo', // Reference to the Logo collection
     },
     phone:String,
+    role:String
 });
 
 
 const Logo = mongoose.model('Logo', logoSchema);
-const Publisher = mongoose.model('Publisher', publisherSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = {Logo,Publisher};
+module.exports = {Logo,User};

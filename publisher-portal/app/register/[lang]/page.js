@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Translation from '@/components/Translation';
+import { useLanguage } from '@/contexts/LanguageContext';
 export default function RegisterForm(req,res){
   const { user } = useUser();
     const [errorMessage, setErrorMessage] = useState('');
@@ -14,7 +15,7 @@ export default function RegisterForm(req,res){
     const { signOut } = useClerk();
     const [userId, setUserId] = useState(null);
     const router = useRouter();
-    const language = req.params.lang;
+    const { language } = useLanguage();
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
     
@@ -35,11 +36,11 @@ export default function RegisterForm(req,res){
     const [formData, setFormData]=useState({
         name:"",
         email:"",
-        phone_no:"",
+        phone:"",
         weburl:"",
         logo:"",
         address:"",
-      
+        role:""
     });
   
     
@@ -63,7 +64,7 @@ export default function RegisterForm(req,res){
             // Check if the user is already registered as a publisher
             try {
               console.log(user.emailAddresses[0]);
-              const response = await axios.get(`https://pubserver.sanchaya.net/publishers/check/${user.emailAddresses[0]}`);
+              const response = await axios.get(`https://pubserver.sanchaya.net/users/check/${user.emailAddresses[0]}`);
               if (response.data.message !== "User does not exist") {
              
                 window.location.href = `/dashboard/${language}`;
@@ -109,7 +110,7 @@ export default function RegisterForm(req,res){
 
       const createLogo = async(newLogo)=>{
         try {
-          const response = await axios.post('https://pubserver.sanchaya.net/publishers/logo', newLogo);
+          const response = await axios.post('https://pubserver.sanchaya.net/users/logo', newLogo);
           const fileId = response.data.message; 
           console.log("Uploaded file ID:", fileId);
           return fileId;
@@ -133,16 +134,16 @@ export default function RegisterForm(req,res){
              
               name: formData.name,
               email: formData.email.emailAddress,
-              phone_no: formData.phone_no,
+              phone: formData.phone,
               weburl: formData.weburl,
               address:formData.address,
               logo:LogoId,
-    
+              role:formData.role
             };
             console.log(data.email);
         
             const response = await fetch(
-              "https://pubserver.sanchaya.net/publishers/register",
+              "https://pubserver.sanchaya.net/users/register",
               {
                 method: "POST",
                 headers: {
@@ -156,14 +157,16 @@ export default function RegisterForm(req,res){
               setFormData({
                 name:"",
                 email:"",
-                phone_no:"",
+                phone:"",
                 weburl:"",
                 logo:"",
                 address:"",
+                role:""
               });
               setFileName("");
               setSelectedFile(null);
               alert("Submitted Successfully");
+              localStorage.setItem('userRole', formData.role);
               window.location.href = `/dashboard/${language}`;
             } else {
               console.error("Failed to submit the form to the backend");
@@ -213,7 +216,7 @@ export default function RegisterForm(req,res){
     return (
         <>
       <div className='mb-20 '>
-            <Header language={language}/>
+            <Header />
         </div>
         <main className="flex flex-col items-center justify-between ">
        
@@ -223,15 +226,26 @@ export default function RegisterForm(req,res){
               <form onSubmit={handleSubmit} className="max-w-full px-4">
   <h1 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-sky-800 mb-8 text-center">Register</h1>
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div className="flex flex-col">
+    <label className="text-sky-600">
+        <Translation language={language} textKey="role" />:
+    </label>
+    <select name="role" value={formData.role} onChange={handleInputChange} required className="px-4 py-2 rounded-md">
+        <option value="">Select Role</option>
+        <option value="author">Author</option>
+        <option value="publisher">Publisher</option>
+    </select>
+</div>
+
     <div className="flex flex-col">
       <label className="text-sky-600">
-      <Translation language={language} textKey="publisher" />:
+      <Translation language={language} textKey="name" />:
       </label>
-      <input type="text" name="name" placeholder='Enter publisher name' value={formData.name} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
+      <input type="text" name="name" placeholder='Enter name' value={formData.name} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>
     <div className="flex flex-col">
       <label className="text-sky-600">
-      <Translation language={language} textKey="publisher_address" />:
+      <Translation language={language} textKey="home_address" />:
       </label>
       <input type="string" name="address" placeholder='Enter home address' value={formData.address} onChange={handleInputChange} required className="px-4 py-2 rounded-md" />
     </div>

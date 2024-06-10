@@ -55,7 +55,7 @@ const handleRegister=()=>{
   <AlertDialogTrigger/>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Are you a Publisher?</AlertDialogTitle>
+      <AlertDialogTitle>Are you a Publisher or an Author?</AlertDialogTitle>
       <AlertDialogDescription>
      
       </AlertDialogDescription>

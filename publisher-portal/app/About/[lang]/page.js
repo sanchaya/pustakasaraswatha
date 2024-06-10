@@ -3,11 +3,12 @@
 import React from "react";
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import { useLanguage } from '@/contexts/LanguageContext';
 export default function About(req,res) {
-    const language= req.params.lang || 'kn';
+    const { language } = useLanguage();
     return(
         <>
-        <Header language={language} />
+        <Header  />
       
       
         <div className='flex flex-col justify-center items-center '>    

@@ -8,7 +8,7 @@ import Translation from '@/components/Translation';
 import { useLanguage } from "@/contexts/LanguageContext";
 
 
-interface Publisher {
+interface Author {
   name:string;
   email: string;
   weburl: string;
@@ -21,12 +21,12 @@ interface Publisher {
  
 }
 
- const Publishers =(req: { params: { lang: any; }; },res: any) =>{
+ const Authors =(req: { params: { lang: any; }; },res: any) =>{
 
-  const [publisherData, setPublisherData]=useState([]);
+  const [authorData, setAuthorData]=useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredPublishers, setfilteredPublishers] = useState<Publisher[]>([]);
+  const [filteredAuthors, setfilteredAuthors] = useState<Author[]>([]);
   // const [language, setLanguage] = useState('en');
   // const language = req.params.lang||'kn';
   const { language } = useLanguage();
@@ -41,28 +41,28 @@ interface Publisher {
         setSearchResults([]);
         return; // No need to proceed further if the query is empty
       }
-      const response = await fetch(`https://pubserver.sanchaya.net/publishers/search?query=${encodeURIComponent(query)}`);
+      const response = await fetch(`https://pubserver.sanchaya.net/authors/search?query=${encodeURIComponent(query)}`);
       if (!response.ok) {
-        throw new Error('Failed to search pulishers');
+        throw new Error('Failed to search authors');
       }
       const searchData = await response.json();
       setSearchResults(searchData);
     } catch (error) {
-      console.error('Error searching publishers:', error);
+      console.error('Error searching authors:', error);
     }
   };
   const fetchData = async()=>{
     const response = await fetch(
-     "https://pubserver.sanchaya.net/getAllPublishers"
+     "https://pubserver.sanchaya.net/getAllAuthors"
     );
     if (!response.ok) {
-      console.log('No publishers');
+      console.log('No authors');
     }
    
     const fetchedData = await response.json();
-    console.log(fetchedData.publishersWithLogo);
+    console.log(fetchedData.authorsWithLogo);
 
-   setPublisherData(fetchedData.publishersWithLogo);
+   setAuthorData(fetchedData.authorsWithLogo);
    
   }
 
@@ -72,11 +72,11 @@ interface Publisher {
 
   useEffect(() => {
     if (searchResults.length === 0 && !searchQuery) {
-      setfilteredPublishers(publisherData);
+      setfilteredAuthors(authorData);
     } else {
-      setfilteredPublishers(searchResults);
+      setfilteredAuthors(searchResults);
     }
-  }, [searchResults, publisherData, searchQuery]);
+  }, [searchResults, authorData, searchQuery]);
   
 
   return (
@@ -89,24 +89,24 @@ interface Publisher {
    <hr className="w-full border-t border-black opacity-20 mb-4" />
   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-5">
 
-  {filteredPublishers.length > 0 ? (
-          filteredPublishers.map((publisher, index) => (
+  {filteredAuthors.length > 0 ? (
+          filteredAuthors.map((author, index) => (
             <div key={index} className="grid">
               <div className="bookCard">
                 <div className="bookCover">
                   <Image
-                    src={publisher.logo.logo}
-                    alt={publisher.name}
+                    src={author.logo.logo}
+                    alt={author.name}
                     width={160}
                     height={150}
                   />
                 </div>
                 <div className="bookDetails">
-                  <div className="font-bold">{publisher.name}</div>
-                  {publisher.address && (<p><span className="bold-text"><Translation language={language} textKey="publisher_address" />: </span> {publisher.address}</p>)}
-                  {publisher.email && (<p><span className="bold-text"><Translation language={language} textKey="email" />: </span>{publisher.email}</p>)} 
-                  {publisher.weburl && (<p><span className="bold-text"><Translation language={language} textKey="web_address" />:</span>{publisher.weburl}</p>)}
-                  {publisher.phone && (<p><span className="bold-text"><Translation language={language} textKey="contact_no" />: </span>{publisher.phone}</p>)}
+                  <div className="font-bold">{author.name}</div>
+                  {author.address && (<p><span className="bold-text"><Translation language={language} textKey="author_address" />: </span> {author.address}</p>)}
+                  {author.email && (<p><span className="bold-text"><Translation language={language} textKey="email" />: </span>{author.email}</p>)} 
+                  {author.weburl && (<p><span className="bold-text"><Translation language={language} textKey="web_address" />:</span>{author.weburl}</p>)}
+                  {author.phone && (<p><span className="bold-text"><Translation language={language} textKey="contact_no" />: </span>{author.phone}</p>)}
                   
                   
                   
@@ -127,4 +127,4 @@ interface Publisher {
   );
 }
 
-export default Publishers;
+export default Authors;

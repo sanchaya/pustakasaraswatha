@@ -2,6 +2,7 @@
 "book_name":"Book Name",
 "subject":"Genre" ,
 "author":"Author",
+"authors":"Authors",
 "pages":"TotalPages",
 "price":"Price",
 "year":"Year", 
@@ -21,5 +22,9 @@
 "about":"About us",
 "contact_us":"Contact Us",
 "dashboard":"Dashboard",
-"search":"Enter search query"
+"search":"Enter search query",
+"author_address":"Author Address",
+"role":"Role",
+"name":"Name",
+"home_address":"Home Address"
 }

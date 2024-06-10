@@ -11,13 +11,13 @@ import {BiChevronDown, BiChevronUp} from "react-icons/bi";
 import { useUser } from "@clerk/nextjs";
 import Header from "@/components/Header";
 import Link from "next/link";
-
+import { useLanguage } from '@/contexts/LanguageContext';
 
 
 const Dashboard = (req,res) => {
 
   const { user } = useUser();
-  const language=req.params.lang ||'kn';
+  const { language } = useLanguage();
   const [url,setUrl]=useState("");
   const [fullData, setFullData] = useState([]); // Store all the data
   const [visibleData, setVisibleData] = useState([]); // Data currently visible in the table
@@ -40,8 +40,8 @@ const Dashboard = (req,res) => {
    
      // Check if userProfile exists in responseData
      if (responseData) {
-        const userProfileData = responseData.publisher;
-        const publisherLogoData = responseData.publisherWithLogo;
+        const userProfileData = responseData.user;
+        const publisherLogoData = responseData.userWithLogo;
         setProfileData(userProfileData);
 
         setUrl(publisherLogoData.logo);
@@ -131,7 +131,7 @@ const Dashboard = (req,res) => {
       console.log('called');
       console.log(user);
       const response = await fetch(
-        `https://pubserver.sanchaya.net/publishers/books/${user.emailAddresses[0]}`
+        `https://pubserver.sanchaya.net/users/books/${user.emailAddresses[0]}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -231,9 +231,9 @@ const Dashboard = (req,res) => {
     <>
       
         
-          <Header language={language}/>
+          <Header/>
          <div className="flex justify-end p-8">
-            <Link href={`/AddBook/${language}`}>
+            <Link href={`/addBook/${language}`}>
               <button className="bg-sky-800 hover:bg-sky-600 text-white px-4 py-2 rounded-md">AddBook</button>
             </Link>
           </div>

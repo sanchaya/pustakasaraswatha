@@ -1,5 +1,5 @@
 const {Book,BookPhoto} =require('./models/bookModel');
-const {Publisher,Logo} = require('./models/publisherModel');
+const {Publisher,Logo} = require('./models/userModel');
 
 async function savePhoto(buffer, mimetype) {
     try {

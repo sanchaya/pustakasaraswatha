@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Translation from '@/components/Translation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     Form,
@@ -13,6 +14,14 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
@@ -20,7 +29,7 @@ import {Card, CardContent,  CardHeader, CardTitle} from "@/components/ui/card";
 import axios from "axios";
 import {useUser} from "@clerk/nextjs";
 import {useEffect} from "react";
-
+import { useLanguage } from '@/contexts/LanguageContext';
 const formSchema = z.object({
 
     name: z.string().min(1, {
@@ -36,7 +45,7 @@ const formSchema = z.object({
         message: "Number must be 10 digits",
     }),
     address:z.string().min(1, "Address is Required"),
-
+    
 });
 
 const processFile = (file) => {
@@ -60,7 +69,7 @@ const processFile = (file) => {
   
   
  const UserDashboard = (req,res) => {
-    const language=req.params.lang ||'kn';
+    const { language } = useLanguage();
     const [url,setUrl]=useState("");
     const[error,setError]=useState("");
     const {user} = useUser();
@@ -85,8 +94,8 @@ const processFile = (file) => {
        
          // Check if userProfile exists in responseData
          if (responseData) {
-            const userProfileData = responseData.publisher;
-            const publisherLogoData = responseData.publisherWithLogo;
+            const userProfileData = responseData.user;
+            const publisherLogoData = responseData.userWithLogo;
             // Set default values for form fields
             console.log(publisherLogoData.logo);
             form.setValue("name", userProfileData.name);
@@ -94,6 +103,7 @@ const processFile = (file) => {
             form.setValue("phone", userProfileData.phone);
             form.setValue("weburl", userProfileData.weburl);
             form.setValue("address",userProfileData.address);
+            form.setValue("role",userProfileData.role);
             setUrl(publisherLogoData.logo);
         }
         } catch (error) {
@@ -131,9 +141,10 @@ const processFile = (file) => {
     
             // Send the form data to the backend API
             const requestData = { ...values }; // Create a new object without circular references
-            await axios.put(`https://pubserver.sanchaya.net/publishers/update/${user.emailAddresses[0]}`, requestData);
+            await axios.put(`https://pubserver.sanchaya.net/users/update/${user.emailAddresses[0]}`, requestData);
     
             console.log('Form data sent successfully to the backend.');
+            localStorage.setItem('userRole', values.role);
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -158,7 +169,7 @@ const processFile = (file) => {
 
     return(
         <>
-     <Header language={language}/>
+     <Header />
     <Card className="w-fit  mx-auto mt-20 text-white bg-sky-900">
     <CardHeader>
         <CardTitle className='mx-auto'>{user && user.firstName}'s Profile</CardTitle>
@@ -166,7 +177,7 @@ const processFile = (file) => {
     </CardHeader>
     <CardContent className='mt-6 text-lg text-white'>
         <div className="flex justify-center mb-6">
-            <Avatar>
+            <Avatar className="w-60 h-60">
                 <AvatarImage src={url} />
                 <AvatarFallback>Profile</AvatarFallback>
             </Avatar>
@@ -175,13 +186,35 @@ const processFile = (file) => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid w-full items-center gap-4 grid-cols-2 text-black">
+                {/* <FormField
+                    disabled={isLoading}
+                    name={"role"} 
+                    control={form.control}
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Role:</FormLabel>
+                            <FormControl>
+                                <Select 
+                                    
+                                    placeholder="Select your Role"
+                                    {...field}
+                                >
+                                    <option value="author">Author</option> 
+                                    <option value="publisher">Publisher</option> 
+                                </Select>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                /> */}
+
                     <FormField
                         disabled={isLoading}
                         name={"name"}
                         control={form.control}
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Name:</FormLabel>
+                                <FormLabel><Translation language={language} textKey="name" />:</FormLabel>
                                 <FormControl>
                                     <Input
                                         disabled={isLoading}
@@ -199,7 +232,7 @@ const processFile = (file) => {
                         control={form.control}
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Email:</FormLabel>
+                                <FormLabel><Translation language={language} textKey="email" />:</FormLabel>
                                 <FormControl>
                                     <Input
                                         disabled={isLoading}
@@ -217,7 +250,7 @@ const processFile = (file) => {
                         control={form.control}
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Website Address:</FormLabel>
+                                <FormLabel><Translation language={language} textKey="web_address" />:</FormLabel>
                               
                                     <FormControl>
                                     <Input
@@ -239,7 +272,7 @@ const processFile = (file) => {
                         control={form.control}
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Phone Number:</FormLabel>
+                                <FormLabel><Translation language={language} textKey="contact_no" />:</FormLabel>
                                 <FormControl>
                                     <Input
                                        
@@ -260,7 +293,7 @@ const processFile = (file) => {
                     control={form.control}
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Home Address </FormLabel>
+                            <FormLabel><Translation language={language} textKey="home_address" />: </FormLabel>
                             <FormControl>
                                 <Textarea
                                     placeholder="Enter your home address"
@@ -277,7 +310,7 @@ const processFile = (file) => {
                     control={form.control}
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Logo</FormLabel>
+                            <FormLabel><Translation language={language} textKey="logo" />:</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="Update your logo"

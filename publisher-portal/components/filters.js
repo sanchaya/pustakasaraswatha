@@ -1,53 +1,24 @@
 "use client"
-import React from 'react';
+import React, {useState} from 'react';
 
 const FilterOptions = ({ onFilter }) => {
+  const [clickedButton, setClickedButton] = useState(null);
+
   const handleFilter = (filterOption) => {
+  
     onFilter(filterOption);
+    setClickedButton(filterOption);
   };
 
   return (
     <div className="flex flex-row gap-2 mb-2 ml-2 align-center items-center">
-   
-        <input
-          type="radio"
-          id="recentlyUploaded"
-          name="filterOption"
-          value="recentlyUploaded"
-          onChange={(e) => handleFilter(e.target.value)}
-        />
-        <label htmlFor="recentlyUploaded" className="ml-2">Recently Uploaded</label>
-     
-      
-        <input
-          type="radio"
-          id="year"
-          name="filterOption"
-          value="year"
-          onChange={(e) => handleFilter(e.target.value)}
-        />
-        <label htmlFor="year" className="ml-2">Year</label>
-      
-      
-        <input
-          type="radio"
-          id="publisherName"
-          name="filterOption"
-          value="publisherName"
-          onChange={(e) => handleFilter(e.target.value)}
-        />
-        <label htmlFor="publisherName" className="ml-2">Publisher Name</label>
-     
-      
-        <input
-          type="radio"
-          id="bookTitle"
-          name="filterOption"
-          value="bookTitle"
-          onChange={(e) => handleFilter(e.target.value)}
-        />
-        <label htmlFor="bookTitle" className="ml-2">Book Title</label>
-     
+
+        <button className={`rounded-lg border-2 border-gray-300  px-2 py-2 ${clickedButton === "recentlyUploaded" ? 'bg-gray-300' : 'hover:bg-gray-300'}`} onClick={()=> handleFilter("recentlyUploaded")}>Recently Uploaded</button>
+        <button className={`rounded-lg border-2 border-gray-300  px-2 py-2 ${clickedButton === "year" ? 'bg-gray-300' : 'hover:bg-gray-300'}`} onClick={()=> handleFilter("year")}>Year</button>
+        <button className={`rounded-lg border-2 border-gray-300  px-2 py-2 ${clickedButton === "publisherName" ? 'bg-gray-300' : 'hover:bg-gray-300'}`} onClick={()=> handleFilter("publisherName")}>Publisher Name</button>
+        <button className={`rounded-lg border-2 border-gray-300  px-2 py-2 ${clickedButton === "bookTitle" ? 'bg-gray-300' : 'hover:bg-gray-300'}`} onClick={()=> handleFilter("bookTitle")}>Book Title</button>
+ 
+ 
     </div>
   );
 };
