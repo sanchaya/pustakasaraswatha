@@ -84,6 +84,7 @@ export default function Header(){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
+                <Link href={`/profile/${language}`} className="no-underline text-black"><Translation language={language} textKey="my_profile" /></Link>
                 <div className='mr-4'>
                     {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} />  */}
                    
@@ -113,6 +114,7 @@ export default function Header(){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
+                <Link href={`/profile/${language}`} className="no-underline text-black"><Translation language={language} textKey="my_profile" /></Link>
                 {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} /> */}
                 <button onClick={handleSignOut}>Sign out</button>
                

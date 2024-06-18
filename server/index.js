@@ -206,15 +206,21 @@ app.put('/users/update/:email',async(req,res)=>{
       role
     
   } = req.body;
-  const logoData = await Logo.create({logo});
+  console.log(req.body);
+  if(logo){
+    const logoData = await Logo.create({logo});
     logoData.save();
+    await User.findByIdAndUpdate(user._id,{
+      logo:logoData._id,
+    },{new:true})
+  }
+  
     const updatedProfile = await User.findByIdAndUpdate(user._id,{
       name,
       email,
       weburl,
       address,
       phone,
-      logo:logoData._id,
       role
     },
   {new:true}

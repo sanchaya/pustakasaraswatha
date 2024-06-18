@@ -82,7 +82,7 @@ const processFile = (file) => {
 
     const fetchData = async () => {
         try {
-          
+          console.log("called")
           const response = await fetch(
             `https://pubserver.sanchaya.net/profile/${user.emailAddresses[0]}`
           );
@@ -118,6 +118,13 @@ const processFile = (file) => {
         }
     },[user]);
 
+    useEffect(() => {
+        if (fileData) {
+            console.log(fileData);
+            const newUrl = URL.createObjectURL(fileData);
+            setUrl(newUrl);
+        }
+    }, [fileData]);
  
 
     const onSubmit = async (values) => {
@@ -132,6 +139,7 @@ const processFile = (file) => {
     
             // Convert the logo image to base64 format
             if (fileData) {
+                console.log(fileData)
                 const logoBase64 = await convertToBase64(fileData);
                 // Update the form values with the base64 encoded logo
                 values = { ...values, logo: logoBase64 };
@@ -141,7 +149,8 @@ const processFile = (file) => {
     
             // Send the form data to the backend API
             const requestData = { ...values }; // Create a new object without circular references
-            await axios.put(`https://pubserver.sanchaya.net/users/update/${user.emailAddresses[0]}`, requestData);
+            console.log(requestData);
+            await axios.put(`https://pubserver.sanchaya.net//users/update/${user.emailAddresses[0]}`, requestData);
     
             console.log('Form data sent successfully to the backend.');
             localStorage.setItem('userRole', values.role);
