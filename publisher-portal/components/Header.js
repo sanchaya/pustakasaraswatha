@@ -2,11 +2,16 @@
 import React, {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
     UserButton,
     useUser,
+    SignOutButton,
     SignInButton,
+    SignIn,
+   useClerk
   } from "@clerk/nextjs";
+
 import Translation from '@/components/Translation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -14,11 +19,22 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function Header(){
     const [showMenu, setShowMenu] = useState(false);
     const { user } = useUser();
+    const { signOut } = useClerk();
     const [selectedLanguage,setLanguage]=useState('en');
     const { language } = useLanguage();
+    const router = useRouter();
     const handleLanguageChange = (selectedLanguage) => {
       setLanguage(selectedLanguage);
     };
+    const handleSignInClick = () => {
+        router.push('/sign-in');
+    };
+    const handleSignOut = async() => {
+        console.log('User signed out');
+        router.push(`/${language}`);
+        await signOut();
+      };
+
     return(
         <>
        
@@ -68,8 +84,13 @@ export default function Header(){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                <div className='mr-4'><UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`}  afterSignOutUrl="/" /> </div>
-                
+                <div className='mr-4'>
+                    {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} />  */}
+                   
+                        <button onClick={handleSignOut}>Sign out</button>
+                    
+                    </div>
+                   
                 </div>
             </div>
                     
@@ -83,8 +104,8 @@ export default function Header(){
                 <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
                 <Link href={`/publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
                 <Link href={`/authors/${language}`} className="no-underline text-black"><Translation language={language} textKey="authors" /></Link>
-                <Link href={`/about/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
+                <Link href={`/about/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
                 <Link href={`/contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
                 <Link href="https://www.facebook.com/kannadasanchaya">
                     <Image src="/facebook.png" alt="facebook" width={35} height={30} />
@@ -92,7 +113,8 @@ export default function Header(){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`}  afterSignOutUrl="/" />
+                {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} /> */}
+                <button onClick={handleSignOut}>Sign out</button>
                
             </nav>
                 
@@ -117,8 +139,11 @@ export default function Header(){
                 <Link href="https://twitter.com/kannadasanchaya">
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
-                    <button  >
-                    <SignInButton  redirectUrl='/isPublisher'/>
+                    {/* <button  >
+                    <SignInButton path="/sign-in" signInForceRedirectUrl={`/isPublisher/${language}`}  />
+                    </button> */}
+                     <button onClick={handleSignInClick}>
+                        Sign In
                     </button>
                     </div>
               
@@ -146,8 +171,8 @@ export default function Header(){
                     <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
                 </Link>
                     <div className='mr-4'>
-                    <button  >
-                    <SignInButton  redirectUrl={`/isPublisher/${language}`}/>
+                    <button onClick={handleSignInClick}>
+                        Sign In
                     </button>
                     </div>
                     </div>

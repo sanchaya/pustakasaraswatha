@@ -32,8 +32,9 @@ export default function IsPublisher(req,res){
       }, [user, userId]);
   
 const handleLogout = async()=>{
+  router.push(`/${language}`);
   await signOut();
-  router.push(`/dashboard/${language}`);
+ 
 }
 
 const handleRegister=()=>{
