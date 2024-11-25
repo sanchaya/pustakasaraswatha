@@ -35,11 +35,11 @@ const changeLanguage = (lang: string) => {
     } else {
       // Handle other pages
       console.log(segments);
-      segments[segments.length - 1] = lang; // Replace the last segment with the new language
+      segments[segments.length - 1] = lang; 
       newPath = `/${segments.join('/')}`;
     }
 
-    // Append any search parameters if they exist
+   
     const queryString = searchParams.toString();
     if (queryString) {
       newPath += `?${queryString}`;

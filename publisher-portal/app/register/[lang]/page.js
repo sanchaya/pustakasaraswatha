@@ -234,6 +234,7 @@ export default function RegisterForm(req,res){
         <option value="">Select Role</option>
         <option value="author">Author</option>
         <option value="publisher">Publisher</option>
+        <option value="both">Both</option>
     </select>
 </div>
 

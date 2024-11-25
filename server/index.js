@@ -263,7 +263,7 @@ app.get('/users/books/:email',async(req,res)=>{
 })
 app.get('/getAllPublishers', async(req,res)=>{
   try{
-    const publishers = await User.find({ role: 'publisher' });
+    const publishers = await User.find({ role: { $in: ['publisher', 'both'] } });
     if(!publishers){
       return res.status(404).json({message:'No publisher found'});
     }
@@ -288,7 +288,7 @@ app.get('/getAllPublishers', async(req,res)=>{
 
 app.get('/getAllAuthors', async(req,res)=>{
   try{
-    const authors = await User.find({ role: 'author' });
+    const authors = await User.find({ role: { $in: ['author', 'both'] } });
     if(!authors){
       return res.status(404).json({message:'No publisher found'});
     }
@@ -421,7 +421,7 @@ app.get('/authors/search', async (req, res) => {
         { email: { $regex: new RegExp(query, 'i') } }
       ],
     };
-    const searchResults = await User.find({ role: 'author', ...searchQuery });
+    const searchResults = await User.find({ role: { $in: ['author', 'both'] }, ...searchQuery });
 
     if (searchResults.length > 0) {
       res.json(searchResults);
@@ -448,7 +448,7 @@ app.get('/publishers/search', async (req, res) => {
         { email: { $regex: new RegExp(query, 'i') } }
       ],
     };
-    const searchResults = await User.find({ role: 'publisher', ...searchQuery });
+    const searchResults = await User.find({ role: { $in: ['publisher', 'both'] }, ...searchQuery });
 
     if (searchResults.length > 0) {
       res.json(searchResults);

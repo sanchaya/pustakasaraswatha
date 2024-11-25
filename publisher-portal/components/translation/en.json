@@ -27,5 +27,6 @@
 "role":"Role",
 "name":"Name",
 "home_address":"Home Address",
-"my_profile":"My Profile"
+"my_profile":"My Profile",
+"both":"Both"
 }

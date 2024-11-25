@@ -62,8 +62,8 @@ const handleRegister=()=>{
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel onClick={handleLogout} >Cancel</AlertDialogCancel>
-      <AlertDialogAction onClick={handleRegister}>Continue</AlertDialogAction>
+      <AlertDialogCancel onClick={handleLogout} >No</AlertDialogCancel>
+      <AlertDialogAction onClick={handleRegister}>Yes</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
