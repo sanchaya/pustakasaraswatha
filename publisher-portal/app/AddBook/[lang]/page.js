@@ -7,13 +7,21 @@ import Translation from '@/components/Translation';
 import { useUser } from "@clerk/nextjs";
 import { useLanguage } from '@/contexts/LanguageContext';
 export default function Form(req,res){
-  const userRole = localStorage.getItem('userRole');
+  const [userRole, setUserRole] = useState(null);
     const [seriesChecked, setSeriesChecked]=useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedFile, setSelectedFile]= useState({bookCover:""});
     const [fileName, setFileName]=useState("");
     const { language } = useLanguage();
     const { user } = useUser();
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const role = localStorage.getItem('userRole');
+        setUserRole(role); 
+      }
+    }, []);
+    
   const handleFileChange = async(event) => {
     const file = event.target.files[0];
 
