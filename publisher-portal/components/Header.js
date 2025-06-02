@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Header(){
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [userId, setUserId] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
     const { user } = useUser();
     const { signOut } = useClerk();
@@ -35,6 +37,21 @@ export default function Header(){
         await signOut();
       };
 
+    useEffect(() => {
+    if (user) {
+      setUserId(user.id);
+      console.log("User ID:", user.id);
+    }
+  }, [user, userId]);
+
+   useEffect(() => {
+ 
+    if (user) {
+      const userRole = user.publicMetadata.userRole;
+      setIsAdmin(userRole === "admin");
+    }
+    
+  }, [user]);
     return(
         <>
        
@@ -58,7 +75,72 @@ export default function Header(){
            
             </div>
 
-            {user ? (
+            {user ? isAdmin ? (
+                <>
+                 <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between w-full sm:w-auto ml-2`}>
+                    <div className='flex flex-row p-2 ml-4'>
+                    <Link href={`/${language}`} className="no-underline text-black">
+                    <Image src="/sanchaya.jpg" alt="sanchaya" width={85} height={40}/>
+                    </Link>
+           
+                    </div>
+                    <div className="flex">
+                    <LanguageSwitcher />
+                    </div>
+         
+                    <div className='flex flex-row gap-4 p-2'>
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={'/admin'} className="no-underline text-black">Admin</Link>
+                <Link href={`/publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
+                <Link href={`/authors/${language}`} className="no-underline text-black"><Translation language={language} textKey="authors" /></Link>
+                <Link href={`/about/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
+                <Link href={`/contact/${language}`} className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
+                <Link href="https://www.facebook.com/kannadasanchaya">
+                    <Image src="/facebook.png" alt="facebook" width={35} height={30} />
+                </Link>
+                <Link href="https://twitter.com/kannadasanchaya">
+                    <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
+                </Link>
+                <Link href={`/profile/${language}`} className="no-underline text-black"><Translation language={language} textKey="my_profile" /></Link>
+                <div className='mr-4'>
+                    {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} />  */}
+                   
+                        <button onClick={handleSignOut}>Sign out</button>
+                    
+                    </div>
+                   
+                </div>
+            </div>
+                    
+                {/* Mobile Menu Links */}
+            
+            <nav className={showMenu ? "flex flex-col gap-3 shadow-lg py-2 justify-center p-2 items-center w-full sm:hidden" : "hidden"}>
+            <div className="flex">
+                <LanguageSwitcher />
+            </div>
+         
+                <Link href={`/${language}`} className="no-underline text-black"><Translation language={language} textKey="home" /></Link>
+                <Link href={`/publishers/${language}`} className="no-underline text-black"><Translation language={language} textKey="publishers" /></Link>
+                <Link href={`/authors/${language}`} className="no-underline text-black"><Translation language={language} textKey="authors" /></Link>
+                <Link href={`/dashboard/${language}`} className="no-underline text-black"><Translation language={language} textKey="dashboard" /></Link>
+                <Link href={`/about/${language}`} className="no-underline text-black"><Translation language={language} textKey="about" /></Link>
+                <Link href={`/contact/${language}`}  className="no-underline text-black"><Translation language={language} textKey="contact_us" /></Link>
+                <Link href="https://www.facebook.com/kannadasanchaya">
+                    <Image src="/facebook.png" alt="facebook" width={35} height={30} />
+                </Link>
+                <Link href="https://twitter.com/kannadasanchaya">
+                    <Image src="/twitter.webp" alt="twitter" width={45} height={40} />
+                </Link>
+                <Link href={`/profile/${language}`} className="no-underline text-black"><Translation language={language} textKey="my_profile" /></Link>
+                {/* <UserButton userProfileMode="navigation"  userProfileUrl={`/profile/${language}`} /> */}
+                <button onClick={handleSignOut}>Sign out</button>
+               
+            </nav>
+                
+                   
+                </>
+            ):(
                 <>
                  <div className={`hidden sm:flex flex-row gap-16 shadow-lg py-2 justify-between w-full sm:w-auto ml-2`}>
                     <div className='flex flex-row p-2 ml-4'>

@@ -1,6 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const app = express();
+const path = require('path');
+const fs = require('fs');
+const csv = require('csv-parser');
 const PORT = 3002;
 const connectDB = require('./connection');
 const cors = require('cors');
@@ -9,7 +12,35 @@ const bodyParser = require('body-parser');
 const { Book, BookPhoto } = require('./models/bookModel');
 const {Logo, User } = require('./models/userModel');
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+
+const csvStorage = multer.diskStorage({
+ destination: function (req, file, cb) {
+    const dir = path.join(__dirname, '../uploads/csv');
+
+    // Create the directory if it doesn't exist
+    fs.mkdirSync(dir, { recursive: true });
+
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const uploadCSV = multer({ storage: csvStorage });
+
+// Logo storage
+const logoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/logos/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const uploadLogo = multer({ storage: logoStorage });
 const {savePhoto, saveLogo} = require('./savePhoto');
 connectDB()
   .then(() => {
@@ -310,6 +341,25 @@ app.get('/getAllAuthors', async(req,res)=>{
   }
 })
 
+app.post('/uploadCSV', uploadCSV.single('csv'), async (req, res) => {
+  const results = [];
+  const filePath = path.join(__dirname, '../uploads/csv', req.file.filename);
+
+  fs.createReadStream(filePath)
+    .pipe(csv())
+    .on('data', (data) => results.push(data))
+    .on('end', async () => {
+      try {
+        // Process `results` and insert into DB
+        // await YourModel.insertMany(results);
+
+        fs.unlinkSync(filePath); // Clean up uploaded file
+        res.status(200).json({ message: 'CSV uploaded and processed.' });
+      } catch (err) {
+        res.status(500).json({ error: 'Failed to process CSV' });
+      }
+    });
+});
 // app.get('/books/search', async (req, res) => {
 //   try {
 //     const { query, criteria } = req.query;
